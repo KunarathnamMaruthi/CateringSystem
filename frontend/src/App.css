@@ -1,0 +1,148 @@
+
+ Eventbite Catering
+ .home-container {
+  text-align: center;
+}
+
+/* HERO TEXT */
+.home-card {
+  margin-bottom: 20px;
+}
+
+/* GRID */
+.image-grid {
+  display: grid;
+  grid-template-columns: 1fr;  /* ✅ single column */
+  gap: 10px;
+}
+
+/* IMAGE SIZE */
+.image-grid img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+/* HERO SECTION (CENTER TEXT) */
+nav a {
+  margin: 0 12px;
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+}
+
+nav {
+  background: #2e5e4e;
+  padding: 12px;
+}
+
+/* SUBTEXT */
+.home-card p {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* IMAGE GRID FULL WIDTH */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0; /* no gap for full look */
+}
+
+/* IMAGES SAME SIZE */
+.image-grid img {
+  width: 100%;
+  height: 250px;        
+  object-fit: cover;    
+
+}
+
+
+.image-grid img {
+  height: 400px;
+}
+/* APPROVE BUTTON */
+.btn-approve {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.btn-approve:hover {
+  background-color: #27ae60;
+}
+
+/* CANCEL BUTTON */
+.btn-cancel {
+  background-color: #d1b83a;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #d19c16;
+}
+
+/* EDIT BUTTON */
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
+/* DELETE BUTTON */
+.btn-delete {
+  background-color: #e61e08;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #5d6d7e;
+}
+
+/* CARD CONTAINER */
+.bookings-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* SINGLE CARD */
+.booking-card {
+  width: 380px;              /* ✅ fixed width */
+  min-height: 250px;        /* ✅ same height */
+  background: #f4f4f4;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border-left: 5px solid #1f7a4d;
+}
+
+/* TITLE */
+.booking-card h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* GRID DETAILS */
+.booking-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* BUTTONS */
+.booking-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.booking-actions button {
+  flex: 1;
+  margin: 5px;
+  padding: 8px;
+  border-radius: 6px;
+}

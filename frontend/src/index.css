@@ -1,0 +1,281 @@
+
+
+
+/* PAGE BACKGROUND */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #1f7a4d, #7fae9e);
+}
+
+/* NAVBAR */
+nav {
+  background: #457f60;
+  padding: 20px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  margin: 0 12px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* MAIN CONTAINER */
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+/* CARD */
+.dashboard-card {
+  background: #ffffff;
+  padding: 75px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1000px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* TITLE */
+.dashboard-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background: #1f7a4d;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* SEARCH */
+.search-box {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* TABLE */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #1f7a4d;
+  color: white;
+  padding: 10px;
+}
+
+.table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+/* STATUS COLORS */
+.status-pending {
+  color: orange;
+}
+
+.status-approved {
+  color: green;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 5px 10px;
+  margin: 2px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-approve {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-cancel {
+  background: #6e210c;
+  color: rgb(91, 38, 38);
+}
+
+.btn-delete {
+  background: #e20808;
+  color: rgb(188, 37, 37);
+}
+
+/* ===== BOOKING ITEM CARD ===== */
+.booking-item {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fafafa;
+  text-align: left;
+}
+
+/* ===== BOOKING TEXT ===== */
+.booking-item p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* ===== BUTTON GROUP ===== */
+.booking-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* ===== EDIT BUTTON ===== */
+.btn-edit {
+  background: #4316a3;
+  color: white;
+}
+
+/* ===== CANCEL BUTTON ===== */
+.btn-cancel {
+  background: #ccc;
+  color: rgb(213, 145, 26);
+}
+
+/* PAGE BACKGROUND */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #1f7a4d, #7fae9e);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MAIN CARD */
+.bookings-card {
+  background: #f4f4f4;
+  padding: 25px;
+  border-radius: 12px;
+  width: 650px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* BOOKING BOX */
+.booking-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 15px;
+  border-left: 6px solid #1f7a4d;
+}
+
+/* GRID DETAILS */
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* BUTTONS */
+.booking-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit {
+  background: #1f7a4d;
+  color: rgb(147, 151, 21);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+.btn-cancel {
+  background: #bc1414;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+/* PAGE BACKGROUND */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #4f7f6e, #7fae9e);
+}
+
+/* NAVBAR (KEEP YOUR STYLE) */
+nav {
+  background: #2e5e4e;
+  padding: 10px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+/* CENTER CONTAINER */
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+/* CARD STYLE */
+.card {
+  background: #f4f4f4;
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+/* INPUT FIELDS */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  background: #1f7a4d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* SECOND BUTTON */
+.btn-secondary {
+  background: #ccc;
+  color: black;
+}
+
+
