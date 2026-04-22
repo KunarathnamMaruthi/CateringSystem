@@ -1,22 +1,42 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 
+// Load env variables
 dotenv.config();
 
+// Connect to MongoDB
+connectDB();
+
+// Create Express app
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/bookings", require("./routes/bookingRoutes"));
+// Routes
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/bookings', require('./routes/bookingRoutes'));
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log(err));
+// Test route
+app.get('/', (req, res) => {
+  res.send('🚀 Catering API is running...');
+});
 
-app.listen(5000, () => {
-  console.log("✅ Server running on http://localhost:5000");
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Something went wrong",
+    error: err.message
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });

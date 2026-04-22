@@ -7,8 +7,6 @@ const jwt = require('jsonwebtoken');
 // ================= REGISTER =================
 router.post('/register', async (req, res) => {
   try {
-    console.log("REGISTER BODY:", req.body); // 🔍 debug
-
     const { name, email, password } = req.body;
 
     // validation
@@ -16,15 +14,12 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: "All fields required" });
     }
 
-    // check existing user
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: 'User already exists' });
 
-    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // create user
     const newUser = await User.create({
       name,
       email,
@@ -77,6 +72,28 @@ router.post('/login', async (req, res) => {
 
   } catch (error) {
     console.error("LOGIN ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// ================= RESET PASSWORD =================
+router.put('/reset-password', async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'User not found' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+
+  } catch (error) {
+    console.error("RESET ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 });
