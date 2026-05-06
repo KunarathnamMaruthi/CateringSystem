@@ -1,84 +1,71 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 // ================= REGISTER =================
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: 'User already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await User.create({
-      name,
-      email,
-      password: hashedPassword
-    });
-
-    res.json({ message: "User registered successfully" });
-
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    const user = await User.create(req.body);
+    res.json(user);
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+    res.status(500).json({ message: err.message });
   }
 });
 
 // ================= LOGIN =================
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'User not found' });
+  const user = await User.findOne({ email }).select("+password");
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Wrong password' });
+  if (!user) return res.status(400).json({ message: "User not found" });
 
-    // 🔐 TOKEN WITH ADMIN INFO
-    const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },
-      'secret',
-      { expiresIn: '1d' }
-    );
+  const match = await user.matchPassword(password);
 
-    // ✅ SAFE USER RESPONSE (NO PASSWORD)
-    res.json({
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin
-      }
-    });
+  if (!match) return res.status(400).json({ message: "Wrong password" });
 
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
+  const token = jwt.sign(
+    { id: user._id, isAdmin: user.isAdmin },
+    process.env.JWT_SECRET
+  );
+
+  res.json({
+    token,
+    user: {
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin
+    }
+  });
 });
 
-// ================= RESET PASSWORD =================
-router.put('/reset-password', async (req, res) => {
+// ================= FORGOT PASSWORD =================
+router.post("/forgot-password", async (req, res) => {
   try {
     const { email, newPassword } = req.body;
 
+    if (!email || !newPassword) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'User not found' });
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    user.password = newPassword; // 🔥 auto-hashed
     await user.save();
 
-    res.json({ message: "Password updated successfully" });
+    res.json({ message: "Password reset successful" });
 
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

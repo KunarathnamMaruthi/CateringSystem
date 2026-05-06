@@ -1,107 +1,122 @@
-import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
-
+import { useEffect, useState } from "react";
+import API from "../api/api";
 
 function MyBookings() {
   const [bookings, setBookings] = useState([]);
-
-  const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   // 🔹 Fetch bookings
-  const fetchBookings = useCallback(async () => {
+  const fetchBookings = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/bookings",
-        { headers: { Authorization: token } }
-      );
+      setLoading(true);
+      const res = await API.get("/bookings");
       setBookings(res.data);
     } catch (err) {
-      console.error(err);
+      console.log("FETCH ERROR:", err.response?.data);
+      alert("Failed to fetch bookings");
+    } finally {
+      setLoading(false);
     }
-  }, [token]);
+  };
 
   useEffect(() => {
     fetchBookings();
-  }, [fetchBookings]);
+  }, []);
 
   // 🔹 Delete booking
   const handleDelete = async (id) => {
+    if (!window.confirm("Cancel this booking?")) return;
+
     try {
-      await axios.delete(
-        `http://localhost:5000/api/bookings/${id}`,
-        { headers: { Authorization: token } }
-      );
+      setActionLoading(true);
+      await API.delete(`/bookings/${id}`);
       alert("Booking cancelled");
       fetchBookings();
     } catch (err) {
-      console.error(err);
+      console.log("DELETE ERROR:", err.response?.data);
+      alert(err.response?.data?.message || "Delete failed");
+    } finally {
+      setActionLoading(false);
     }
   };
 
   // 🔹 Edit booking
   const handleEdit = async (id) => {
     const newGuests = prompt("Enter new guest count:");
-    if (!newGuests) return;
+
+    // ❌ prevent invalid input
+    if (!newGuests || isNaN(newGuests) || Number(newGuests) <= 0) {
+      return alert("Please enter a valid number");
+    }
 
     try {
-      await axios.put(
-        `http://localhost:5000/api/bookings/${id}`,
-        { guests: newGuests },
-        { headers: { Authorization: token } }
-      );
+      setActionLoading(true);
+
+      await API.put(`/bookings/${id}`, {
+        guests: Number(newGuests),
+      });
+
       alert("Booking updated");
       fetchBookings();
     } catch (err) {
-      console.error(err);
+      console.log("UPDATE ERROR:", err.response?.data);
+      alert(err.response?.data?.message || "Update failed");
+    } finally {
+      setActionLoading(false);
     }
   };
 
   return (
-    
-
     <div className="page-container">
-  <div className="card" style={{ width: "500px" }}>
-    <h2>My Bookings</h2>
+      <div className="card" style={{ width: "500px" }}>
+        <h2>My Bookings</h2>
 
-    {bookings.length === 0 ? (
-      <p>No bookings found</p>
-    ) : (
-      bookings.map((b) => (
-        <div className="booking-box" key={b._id}>
-          <div className="booking-grid">
-            <p><b>Name:</b> {b.name}</p>
-            <p><b>Email:</b> {b.email}</p>
+        {loading ? (
+          <p>Loading...</p>
+        ) : bookings.length === 0 ? (
+          <p>No bookings found</p>
+        ) : (
+          bookings.map((b) => (
+            <div className="booking-box" key={b._id}>
+              <div className="booking-grid">
+                <p><b>Name:</b> {b.name}</p>
+                <p><b>Email:</b> {b.email}</p>
+                <p><b>Phone:</b> {b.phone}</p>
+                <p><b>Guests:</b> {b.guests}</p>
 
-            <p><b>Phone:</b> {b.phone}</p>
-            <p><b>Guests:</b> {b.guests}</p>
+                <p>
+                  <b>Date:</b>{" "}
+                  {b.eventDate
+                    ? new Date(b.eventDate).toLocaleDateString("en-AU")
+                    : "-"}
+                </p>
 
-            <p>
-  <b>Date:</b>{" "}
-  {b.eventDate
-    ? new Date(b.eventDate).toLocaleDateString("en-AU")
-    : b.date
-    ? new Date(b.date).toLocaleDateString("en-AU")
-    : "-"}
-</p>
-            <p><b>Time:</b> {b.time}</p>
+                <p><b>Time:</b> {b.time}</p>
+                <p><b>Category:</b> {b.category}</p>
+                <p><b>Address:</b> {b.address}</p>
+              </div>
 
-            <p><b>Category:</b> {b.category}</p>
-            <p><b>Address:</b> {b.address}</p>
-          </div>
-<div className="booking-actions">
-                <button onClick={() => handleEdit(b._id)}>Edit</button>
+              <div className="booking-actions">
+                <button
+                  onClick={() => handleEdit(b._id)}
+                  disabled={actionLoading}
+                >
+                  Edit
+                </button>
 
-                <button onClick={() => handleDelete(b._id)}>
-                 Cancel
-            </button>
-          
-           
-          </div>
-        </div>
-      ))
-    )}
-  </div>
-</div>
+                <button
+                  onClick={() => handleDelete(b._id)}
+                  disabled={actionLoading}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
   );
 }
 

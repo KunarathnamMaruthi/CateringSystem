@@ -1,5 +1,5 @@
 import { useState } from "react";
-import API from "../api/api"; // ✅ correct import
+import API from "../api/api";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
@@ -11,18 +11,47 @@ export default function Login() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
   const handleLogin = async () => {
     try {
-      const res = await API.post("/users/login", data); // ✅ FIXED
+      // ✅ validation
+      if (!data.email || !data.password) {
+        return alert("Please enter email and password");
+      }
 
-      localStorage.setItem("token", res.data.token); // save token
+      setLoading(true);
+
+      const res = await API.post("/users/login", data);
+
+      // ✅ save token
+      localStorage.setItem("token", res.data.token);
+
+      // ✅ save user
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login successful");
-      navigate("/booking");
+
+      // 🔥 REDIRECT BASED ON ROLE
+      if (res.data.user?.isAdmin) {
+        navigate("/admin");
+      } else {
+        navigate("/booking");
+      }
+
     } catch (err) {
-      console.error(err);
-      alert("Login failed");
+      console.log("LOGIN ERROR:", err.response?.data);
+
+      const message =
+        err.response?.data?.message || "Invalid email or password";
+
+      alert(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,21 +61,23 @@ export default function Login() {
         <h2>Login</h2>
 
         <input
+          name="email"
           placeholder="Email"
-          onChange={(e) =>
-            setData({ ...data, email: e.target.value })
-          }
+          value={data.email}
+          onChange={handleChange}
         />
 
         <input
+          name="password"
           type="password"
           placeholder="Password"
-          onChange={(e) =>
-            setData({ ...data, password: e.target.value })
-          }
+          value={data.password}
+          onChange={handleChange}
         />
 
-        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin} disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
         <p>
           Don't have an account?{" "}

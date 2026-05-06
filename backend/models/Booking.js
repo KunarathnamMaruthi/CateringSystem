@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema({
   name: String,
@@ -9,11 +9,8 @@ const bookingSchema = new mongoose.Schema({
   eventDate: Date,
   time: String,
   guests: Number,
-  status: {
-    type: String,
-    enum: ["pending", "approved", "cancelled"],
-    default: "pending"
-  }
+  status: { type: String, default: "pending" },
+  userId: String
 }, { timestamps: true });
 
-export default mongoose.model("Booking", bookingSchema);
+module.exports = mongoose.model("Booking", bookingSchema);

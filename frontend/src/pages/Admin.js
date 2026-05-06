@@ -5,45 +5,90 @@ export default function Admin() {
   const [search, setSearch] = useState("");
   const [bookings, setBookings] = useState([]);
   const [editData, setEditData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // 🔒 Protect admin
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+
+    if (!token || !user?.isAdmin) {
+      window.location.href = "/login";
+    }
+  }, []);
 
   // 🔹 FETCH BOOKINGS
   const fetchBookings = async () => {
     try {
+      setLoading(true);
       const res = await API.get("/bookings");
       setBookings(res.data);
     } catch (err) {
-      console.error(err);
+      console.error(err.response?.data);
+      alert("Failed to fetch bookings");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // 🔹 LOAD DATA
   useEffect(() => {
     fetchBookings();
   }, []);
 
   // 🔹 UPDATE STATUS
   const updateStatus = async (id, status) => {
-    await API.put(`/bookings/${id}`, { status });
-    fetchBookings();
+    try {
+      setLoading(true);
+      await API.put(`/bookings/${id}`, { status });
+      fetchBookings();
+    } catch (err) {
+      alert(err.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 🔹 DELETE
   const deleteBooking = async (id) => {
-    await API.delete(`/bookings/${id}`);
-    fetchBookings();
+    if (!window.confirm("Are you sure?")) return;
+
+    try {
+      setLoading(true);
+      await API.delete(`/bookings/${id}`);
+      fetchBookings();
+    } catch (err) {
+      alert(err.response?.data?.message || "Delete failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // 🔹 OPEN EDIT
+  // 🔹 EDIT
   const editBooking = (booking) => {
     setEditData(booking);
   };
 
-  // 🔹 SAVE EDIT
   const updateBooking = async () => {
-    await API.put(`/bookings/${editData._id}`, editData);
-    alert("Updated successfully");
-    setEditData(null);
-    fetchBookings();
+    if (!editData.name || !editData.email) {
+      return alert("Name & Email required");
+    }
+
+    try {
+      setLoading(true);
+
+      await API.put(`/bookings/${editData._id}`, {
+        ...editData,
+        guests: Number(editData.guests),
+      });
+
+      alert("Updated successfully");
+      setEditData(null);
+      fetchBookings();
+    } catch (err) {
+      alert(err.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,18 +96,19 @@ export default function Admin() {
       <div className="dashboard-card">
         <h2>Admin Dashboard</h2>
 
-        {/* 🔍 SEARCH */}
+        {/* SEARCH */}
         <input
           type="text"
           placeholder="Search bookings..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ marginBottom: "10px", padding: "8px", width: "100%" }}
         />
 
-        {/* ✏️ EDIT FORM */}
+        {loading && <p>Loading...</p>}
+
+        {/* EDIT FORM */}
         {editData && (
-          <div className="card" style={{ marginBottom: "20px" }}>
+          <div className="card">
             <h3>Edit Booking</h3>
 
             <input
@@ -70,7 +116,6 @@ export default function Admin() {
               onChange={(e) =>
                 setEditData({ ...editData, name: e.target.value })
               }
-              placeholder="Name"
             />
 
             <input
@@ -78,59 +123,16 @@ export default function Admin() {
               onChange={(e) =>
                 setEditData({ ...editData, email: e.target.value })
               }
-              placeholder="Email"
-            />
-
-            <input
-              value={editData.phone || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, phone: e.target.value })
-              }
-              placeholder="Phone"
-            />
-
-            <input
-              value={editData.address || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, address: e.target.value })
-              }
-              placeholder="Address"
-            />
-
-            <input
-              value={editData.category || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, category: e.target.value })
-              }
-              placeholder="Event"
-            />
-
-            <input
-              type="date"
-              value={
-                editData.eventDate
-                  ? editData.eventDate.substring(0, 10)
-                  : ""
-              }
-              onChange={(e) =>
-                setEditData({ ...editData, eventDate: e.target.value })
-              }
-            />
-
-            <input
-              value={editData.time || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, time: e.target.value })
-              }
-              placeholder="Time"
             />
 
             <input
               value={editData.guests || ""}
               onChange={(e) =>
-                setEditData({ ...editData, guests: e.target.value })
+                setEditData({
+                  ...editData,
+                  guests: Number(e.target.value),
+                })
               }
-              placeholder="Guests"
             />
 
             <button onClick={updateBooking}>Save</button>
@@ -138,7 +140,7 @@ export default function Admin() {
           </div>
         )}
 
-        {/* 📊 STATS */}
+        {/* STATS */}
         <div className="stats">
           <div>Total: {bookings.length}</div>
           <div>
@@ -152,19 +154,14 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* 📋 BOOKINGS TABLE */}
-        <h3>All Bookings</h3>
-        <table className="table">
+        {/* TABLE */}
+        <table>
           <thead>
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Event</th>
-              <th>Date</th>
-              <th>Time</th>
               <th>Guests</th>
+              <th>Date</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -173,80 +170,53 @@ export default function Admin() {
           <tbody>
             {bookings
               .filter((b) =>
-                (b.name || "")
+                (b.name + b.email)
                   .toLowerCase()
                   .includes(search.toLowerCase())
               )
               .map((b) => (
                 <tr key={b._id}>
-                  <td>{b.name || "-"}</td>
-                  <td>{b.email || "-"}</td>
-                  <td>{b.phone || "-"}</td>
-                  <td>{b.address || "-"}</td>
-                  <td>{b.category || "-"}</td>
-
-                  {/* ✅ FIXED DATE */}
+                  <td>{b.name}</td>
+                  <td>{b.email}</td>
+                  <td>{b.guests}</td>
                   <td>
                     {b.eventDate
                       ? new Date(b.eventDate).toLocaleDateString("en-AU")
-                      : b.date
-                      ? new Date(b.date).toLocaleDateString("en-AU")
                       : "-"}
                   </td>
 
-                  <td>{b.time || "-"}</td>
-                  <td>{b.guests || "-"}</td>
-
-                  {/* STATUS */}
                   <td
-                    className={
-                      b.status === "approved"
-                        ? "status-approved"
-                        : b.status === "cancelled"
-                        ? "status-cancelled"
-                        : "status-pending"
-                    }
+                    style={{
+                      color:
+                        b.status === "approved"
+                          ? "green"
+                          : b.status === "cancelled"
+                          ? "red"
+                          : "orange",
+                    }}
                   >
-                    {b.status || "pending"}
+                    {b.status}
                   </td>
 
-                  {/* BUTTONS */}
                   <td>
-                    <div className="button-group">
-                      <button
-                        className="btn btn-approve"
-                        onClick={() => updateStatus(b._id, "approved")}
-                      >
-                        Approve
-                      </button>
+                    <button onClick={() => updateStatus(b._id, "approved")}>
+                      Approve
+                    </button>
 
-                      <button
-                        className="btn btn-cancel"
-                        onClick={() => updateStatus(b._id, "cancelled")}
-                      >
-                        Cancel
-                      </button>
+                    <button onClick={() => updateStatus(b._id, "cancelled")}>
+                      Cancel
+                    </button>
 
-                      <button
-                        className="btn btn-edit"
-                        onClick={() => editBooking(b)}
-                      >
-                        Edit
-                      </button>
+                    <button onClick={() => editBooking(b)}>Edit</button>
 
-                      <button
-                        className="btn btn-delete"
-                        onClick={() => deleteBooking(b._id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <button onClick={() => deleteBooking(b._id)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
-
       </div>
     </div>
   );
