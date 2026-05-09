@@ -1,6 +1,9 @@
 import { useState } from "react";
 import API from "../api/api";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
+=======
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
 import "../App.css";
 
 function Register() {
@@ -20,6 +23,7 @@ function Register() {
 
   const handleRegister = async () => {
     try {
+<<<<<<< HEAD
       // ✅ validation
       if (!data.name || !data.email || !data.password) {
         return alert("Please fill all fields");
@@ -56,6 +60,19 @@ function Register() {
       alert(message);
     } finally {
       setLoading(false);
+=======
+      await API.post("/users/register", {
+        name,
+        email,
+        password,
+      });
+
+      alert("Registered Successfully");
+
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert(err.response?.data?.message || "Register failed");
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
     }
   };
 
@@ -86,6 +103,7 @@ function Register() {
           onChange={handleChange}
         />
 
+<<<<<<< HEAD
         <button onClick={handleRegister} disabled={loading}>
           {loading ? "Registering..." : "Register"}
         </button>
@@ -99,6 +117,9 @@ function Register() {
             Login here
           </span>
         </p>
+=======
+        <button onClick={handleRegister}>Register</button>
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
       </div>
     </div>
   );

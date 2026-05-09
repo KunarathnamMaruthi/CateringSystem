@@ -23,7 +23,14 @@ export default function Booking() {
   };
 
   const handleSubmit = async () => {
+    // ✅ VALIDATION (IMPORTANT)
+    if (!data.name || !data.email || !data.guests || !data.date || !data.category) {
+      alert("Please fill all required fields");
+      return;
+    }
+
     try {
+<<<<<<< HEAD
       // ✅ validation
       if (!data.name || !data.email || !data.guests || !data.eventDate) {
         return alert("Please fill all required fields");
@@ -45,13 +52,27 @@ export default function Booking() {
       alert("Booking Submitted Successfully!");
 
       // reset form
+=======
+      await API.post("/bookings", data);
+
+      alert("Booking Submitted Successfully!");
+
+      // ✅ RESET FORM
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
       setData({
         name: "",
         email: "",
         phone: "",
         address: "",
+<<<<<<< HEAD
         guests: "",
         eventDate: "",
+=======
+        street: "",
+        postal: "",
+        guests: "",
+        date: "",
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
         category: "",
         time: "",
         status: "pending"
@@ -60,10 +81,15 @@ export default function Booking() {
       setStep(1);
 
     } catch (err) {
+<<<<<<< HEAD
       console.log("ERROR:", err.response?.data);
       alert(err.response?.data?.message || "Booking failed");
     } finally {
       setLoading(false);
+=======
+      console.error(err.response?.data || err.message);
+      alert(err.response?.data?.message || "Booking failed");
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
     }
   };
 
@@ -72,9 +98,9 @@ export default function Booking() {
       <div className="card">
         <h2>Booking Here!</h2>
 
-        {/* STEP 1 */}
         {step === 1 && (
           <>
+<<<<<<< HEAD
             <input
               name="name"
               placeholder="Name"
@@ -102,24 +128,37 @@ export default function Booking() {
               value={data.address}
               onChange={handleChange}
             />
+=======
+            <input name="name" placeholder="Full Name" value={data.name} onChange={handleChange} />
+            <input name="email" placeholder="Email" value={data.email} onChange={handleChange} />
+            <input name="phone" placeholder="Phone" value={data.phone} onChange={handleChange} />
+            <input name="address" placeholder="Address" value={data.address} onChange={handleChange} />
+            <input name="street" placeholder="Street Address" value={data.street} onChange={handleChange} />
+            <input name="postal" placeholder="Postal Code" value={data.postal} onChange={handleChange} />
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
 
             <button onClick={() => setStep(2)}>Next</button>
           </>
         )}
 
-        {/* STEP 2 */}
         {step === 2 && (
           <>
+<<<<<<< HEAD
             <select
               name="guests"
               value={data.guests}
               onChange={handleChange}
             >
               <option value="">Guests</option>
+=======
+            <select name="guests" value={data.guests} onChange={handleChange}>
+              <option value="">Select Guests</option>
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
               <option value="50">50</option>
               <option value="100">100</option>
               <option value="150">150</option>
               <option value="200">200</option>
+<<<<<<< HEAD
             </select>
 
             <input
@@ -135,11 +174,22 @@ export default function Booking() {
               onChange={handleChange}
             >
               <option value="">Category</option>
+=======
+              <option value="250">250</option>
+              <option value="350">350</option>
+            </select>
+
+            <input type="date" name="date" value={data.date} onChange={handleChange} />
+
+            <select name="category" value={data.category} onChange={handleChange}>
+              <option value="">Event Category</option>
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
               <option value="Wedding">Wedding</option>
               <option value="Birthday">Birthday</option>
               <option value="Corporate">Corporate</option>
             </select>
 
+<<<<<<< HEAD
             <input
               name="time"
               placeholder="Time (e.g. 6:00 PM)"
@@ -153,6 +203,17 @@ export default function Booking() {
               <button onClick={handleSubmit} disabled={loading}>
                 {loading ? "Submitting..." : "Submit"}
               </button>
+=======
+             
+              <label>Select Time:</label> 
+              <input type="time" name="time" value={data.time} onChange={handleChange} />
+
+          
+
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button onClick={() => setStep(1)}>Back</button>
+              <button onClick={handleSubmit}>Submit</button>
+>>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
             </div>
           </>
         )}
