@@ -1,9 +1,6 @@
 import { useState } from "react";
-import API from "../api/api";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
-=======
->>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
+import API from "../api/api";
 import "../App.css";
 
 function Register() {
@@ -18,13 +15,15 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleRegister = async () => {
     try {
-<<<<<<< HEAD
-      // ✅ validation
+      // validation
       if (!data.name || !data.email || !data.password) {
         return alert("Please fill all fields");
       }
@@ -41,38 +40,19 @@ function Register() {
 
       const res = await API.post("/users/register", data);
 
-      alert("Registered Successfully");
+      alert("Registered Successfully!");
 
-      // 🔥 auto-fill login (optional UX improvement)
-      localStorage.setItem(
-        "tempUser",
-        JSON.stringify({ email: data.email })
-      );
+      console.log(res.data);
 
       navigate("/login");
-
-    } catch (err) {
-      console.log("REGISTER ERROR:", err.response?.data);
-
-      const message =
-        err.response?.data?.message || "Error registering user";
-
-      alert(message);
-    } finally {
-      setLoading(false);
-=======
-      await API.post("/users/register", {
-        name,
-        email,
-        password,
-      });
-
-      alert("Registered Successfully");
-
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.response?.data?.message || "Register failed");
->>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
+
+      alert(
+        err.response?.data?.message || "Register failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,8 +83,10 @@ function Register() {
           onChange={handleChange}
         />
 
-<<<<<<< HEAD
-        <button onClick={handleRegister} disabled={loading}>
+        <button
+          onClick={handleRegister}
+          disabled={loading}
+        >
           {loading ? "Registering..." : "Register"}
         </button>
 
@@ -112,14 +94,14 @@ function Register() {
           Already have an account?{" "}
           <span
             onClick={() => navigate("/login")}
-            style={{ color: "blue", cursor: "pointer" }}
+            style={{
+              color: "blue",
+              cursor: "pointer",
+            }}
           >
-            Login here
+            Login Here
           </span>
         </p>
-=======
-        <button onClick={handleRegister}>Register</button>
->>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
       </div>
     </div>
   );

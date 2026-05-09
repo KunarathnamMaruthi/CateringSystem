@@ -6,13 +6,13 @@ const Menu = require("../models/Menu");
 
 const router = express.Router();
 
-// Multer storage
+// ================= MULTER STORAGE =================
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, "uploads/");
   },
 
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     cb(
       null,
       Date.now() + path.extname(file.originalname)
@@ -22,11 +22,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Get all menus
+
+// ================= GET ALL MENUS =================
 router.get("/", async (req, res) => {
   try {
-    const menus = await Menu.find();
+    const menus = await Menu.find()
+      .sort({ createdAt: -1 });
+
     res.json(menus);
+
   } catch (error) {
     res.status(500).json({
       message: "Failed to fetch menus",
@@ -34,17 +38,23 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add menu with image upload
+
+// ================= CREATE MENU =================
 router.post(
   "/",
   upload.single("image"),
   async (req, res) => {
     try {
-      const { name, category, price, description } =
-        req.body;
+      const {
+        name,
+        category,
+        price,
+        description,
+      } = req.body;
 
+      // ✅ AWS Public IP
       const imageUrl = req.file
-        ? `http://localhost:5000/uploads/${req.file.filename}`
+        ? `http://3.27.213.247:5000/uploads/${req.file.filename}`
         : "";
 
       const newMenu = new Menu({
@@ -57,9 +67,13 @@ router.post(
 
       await newMenu.save();
 
-      res.status(201).json(newMenu);
+      res.status(201).json({
+        message: "Menu added successfully",
+        menu: newMenu,
+      });
+
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       res.status(500).json({
         message: "Failed to add menu",
@@ -68,14 +82,16 @@ router.post(
   }
 );
 
-// Delete menu
+
+// ================= DELETE MENU =================
 router.delete("/:id", async (req, res) => {
   try {
     await Menu.findByIdAndDelete(req.params.id);
 
     res.json({
-      message: "Menu deleted",
+      message: "Menu deleted successfully",
     });
+
   } catch (error) {
     res.status(500).json({
       message: "Failed to delete menu",

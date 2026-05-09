@@ -1,30 +1,23 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // maruthi changed this part
 
 const connectDB = async () => {
   try {
-<<<<<<< HEAD
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB Connected:", conn.connection.host);
-  } catch (err) {
-    console.error(err.message);
-=======
-    console.log(" Connecting to MongoDB...");
+    console.log("Connecting to MongoDB...");
 
     const conn = await mongoose.connect(
       process.env.MONGO_URI
     );
 
     console.log(
-      ` MongoDB Connected: ${conn.connection.host}`
+      `MongoDB Connected: ${conn.connection.host}`
     );
 
   } catch (err) {
     console.error(
-      " MongoDB Error:",
+      "MongoDB Error:",
       err.message
     );
 
->>>>>>> faed3db (Save remaining changes)
     process.exit(1);
   }
 };
