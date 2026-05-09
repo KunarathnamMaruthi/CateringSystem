@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+<<<<<<< HEAD
 const bookingSchema = new mongoose.Schema({
 <<<<<<< HEAD
   name: String,
@@ -30,5 +31,58 @@ const bookingSchema = new mongoose.Schema({
   userId: { type: String }
 >>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
 }, { timestamps: true });
+=======
+const bookingSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+>>>>>>> faed3db (Save remaining changes)
 
-module.exports = mongoose.model("Booking", bookingSchema);
+    email: {
+      type: String,
+      required: true,
+    },
+
+    phone: String,
+
+    address: String,
+
+    street: String,
+
+    postal: String,
+
+    guests: {
+      type: Number,
+      required: true,
+    },
+
+    eventDate: {
+      type: Date,
+      required: true,
+    },
+
+    category: String,
+
+    time: String,
+
+    status: {
+      type: String,
+      default: "pending",
+    },
+
+    userId: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model(
+  "Booking",
+  bookingSchema
+);

@@ -23,7 +23,7 @@ export default function Booking() {
   };
 
   const handleSubmit = async () => {
-    // ✅ VALIDATION (IMPORTANT)
+    // ALIDATION (IMPORTANT)
     if (!data.name || !data.email || !data.guests || !data.date || !data.category) {
       alert("Please fill all required fields");
       return;
@@ -57,8 +57,12 @@ export default function Booking() {
 
       alert("Booking Submitted Successfully!");
 
+<<<<<<< HEAD
       // ✅ RESET FORM
 >>>>>>> 8a859d55cba6a5ddcf12c33f9345782b57581e2b
+=======
+      //  RESET FORM
+>>>>>>> faed3db (Save remaining changes)
       setData({
         name: "",
         email: "",
