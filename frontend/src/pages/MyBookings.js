@@ -6,7 +6,7 @@ function MyBookings() {
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // 🔹 Fetch bookings
+  //  Fetch bookings
   const fetchBookings = async () => {
     try {
       setLoading(true);
@@ -45,7 +45,7 @@ function MyBookings() {
   const handleEdit = async (id) => {
     const newGuests = prompt("Enter new guest count:");
 
-    // ❌ prevent invalid input
+    //  prevent invalid input
     if (!newGuests || isNaN(newGuests) || Number(newGuests) <= 0) {
       return alert("Please enter a valid number");
     }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import API from "../api/api";
 
 export default function ForgotPassword() {
@@ -7,29 +8,52 @@ export default function ForgotPassword() {
     newPassword: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
   const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+    setData({
+      ...data,
+      [e.target.name]:
+        e.target.value,
+    });
   };
 
   const handleReset = async () => {
     try {
-      if (!data.email || !data.newPassword) {
-        return alert("Please fill all fields");
+      if (
+        !data.email ||
+        !data.newPassword
+      ) {
+        return alert(
+          "Please fill all fields"
+        );
       }
 
       setLoading(true);
 
-      const res = await API.post("/users/forgot-password", data);
+      const res = await API.put(
+        "/users/reset-password",
+        data
+      );
 
       alert(res.data.message);
 
-      setData({ email: "", newPassword: "" });
+      setData({
+        email: "",
+        newPassword: "",
+      });
 
     } catch (err) {
-      console.log(err.response?.data);
-      alert(err.response?.data?.message || "Reset failed");
+      console.log(
+        err.response?.data
+      );
+
+      alert(
+        err.response?.data?.message ||
+          "Reset failed"
+      );
+
     } finally {
       setLoading(false);
     }
@@ -55,8 +79,13 @@ export default function ForgotPassword() {
           onChange={handleChange}
         />
 
-        <button onClick={handleReset} disabled={loading}>
-          {loading ? "Resetting..." : "Reset Password"}
+        <button
+          onClick={handleReset}
+          disabled={loading}
+        >
+          {loading
+            ? "Resetting..."
+            : "Reset Password"}
         </button>
       </div>
     </div>

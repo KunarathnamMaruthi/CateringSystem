@@ -1,12 +1,13 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-
 const Menu = require("../models/Menu");
+
+
 
 const router = express.Router();
 
-// ================= MULTER STORAGE =================
+//  MULTER STORAGE 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -23,7 +24,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 
-// ================= GET ALL MENUS =================
+//  GET ALL MENUS 
 router.get("/", async (req, res) => {
   try {
     const menus = await Menu.find()
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
 });
 
 
-// ================= CREATE MENU =================
+//  CREATE MENU 
 router.post(
   "/",
   upload.single("image"),
@@ -52,9 +53,9 @@ router.post(
         description,
       } = req.body;
 
-      // ✅ AWS Public IP
+      //  AWS Public IP
       const imageUrl = req.file
-        ? `http://3.27.213.247:5000/uploads/${req.file.filename}`
+        ? `http://3.106.114.80/uploads/${req.file.filename}`
         : "";
 
       const newMenu = new Menu({
@@ -83,7 +84,7 @@ router.post(
 );
 
 
-// ================= DELETE MENU =================
+//  DELETE MENU 
 router.delete("/:id", async (req, res) => {
   try {
     await Menu.findByIdAndDelete(req.params.id);

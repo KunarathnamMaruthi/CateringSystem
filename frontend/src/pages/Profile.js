@@ -10,7 +10,7 @@ function Profile() {
       const storedUser = localStorage.getItem("user");
       const token = localStorage.getItem("token");
 
-      // 🔒 Protect route
+      //  Protect route
       if (!token) {
         navigate("/login");
         return;

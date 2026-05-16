@@ -3,7 +3,7 @@ class BookingService {
     this.Booking = BookingModel;
   }
 
-  // ================= CREATE BOOKING =================
+  //  CREATE BOOKING 
   async createBooking(data, userId) {
     return await this.Booking.create({
       ...data,
@@ -11,14 +11,14 @@ class BookingService {
     });
   }
 
-  // ================= GET USER BOOKINGS =================
+  //  GET USER BOOKINGS 
   async getUserBookings(userId) {
     return await this.Booking.find({
       userId,
     }).sort({ createdAt: -1 });
   }
 
-  // ================= UPDATE BOOKING =================
+  //  UPDATE BOOKING 
   async updateBooking(id, data) {
     return await this.Booking.findByIdAndUpdate(
       id,
@@ -27,7 +27,7 @@ class BookingService {
     );
   }
 
-  // ================= DELETE BOOKING =================
+  //  DELETE BOOKING 
   async deleteBooking(id) {
     return await this.Booking.findByIdAndDelete(id);
   }

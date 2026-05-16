@@ -8,10 +8,19 @@ const jwt = require("jsonwebtoken");
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    const { name, email, password } =
+      req.body;
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+    });
 
     res.status(201).json({
-      message: "User registered successfully",
+      message:
+        "User registered successfully",
+
       user: {
         _id: user._id,
         name: user.name,
@@ -38,11 +47,13 @@ router.post("/register", async (req, res) => {
 // ================= LOGIN =================
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } =
+      req.body;
 
-    //  Find user
-    const user = await User.findOne({ email })
-      .select("+password");
+    // Find user
+    const user = await User.findOne({
+      email,
+    }).select("+password");
 
     if (!user) {
       return res.status(400).json({
@@ -50,8 +61,9 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    //  Compare password
-    const match = await user.matchPassword(password);
+    // Compare password
+    const match =
+      await user.matchPassword(password);
 
     if (!match) {
       return res.status(400).json({
@@ -59,13 +71,15 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    //  Generate token
+    // Generate token
     const token = jwt.sign(
       {
         id: user._id,
         isAdmin: user.isAdmin,
       },
+
       process.env.JWT_SECRET,
+
       {
         expiresIn: "1d",
       }
@@ -73,6 +87,7 @@ router.post("/login", async (req, res) => {
 
     res.json({
       token,
+
       user: {
         _id: user._id,
         name: user.name,
@@ -82,7 +97,10 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("LOGIN ERROR:", error);
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
 
     res.status(500).json({
       message: error.message,
@@ -92,42 +110,54 @@ router.post("/login", async (req, res) => {
 
 
 // ================= RESET PASSWORD =================
-router.put("/reset-password", async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
+router.put(
+  "/reset-password",
+  async (req, res) => {
+    try {
+      const {
+        email,
+        newPassword,
+      } = req.body;
 
-    //  Validation
-    if (!email || !newPassword) {
-      return res.status(400).json({
-        message: "All fields are required",
+      // Validation
+      if (!email || !newPassword) {
+        return res.status(400).json({
+          message:
+            "All fields are required",
+        });
+      }
+
+      // Find user
+      const user =
+        await User.findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      // Update password
+      user.password = newPassword;
+
+      await user.save();
+
+      res.json({
+        message:
+          "Password reset successful",
+      });
+
+    } catch (error) {
+      console.error(
+        "RESET PASSWORD ERROR:",
+        error
+      );
+
+      res.status(500).json({
+        message: error.message,
       });
     }
-
-    //  Find user
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-    //  Update password
-    user.password = newPassword;
-
-    await user.save();
-
-    res.json({
-      message: "Password reset successful",
-    });
-
-  } catch (error) {
-    console.error("RESET PASSWORD ERROR:", error);
-
-    res.status(500).json({
-      message: error.message,
-    });
   }
-});
+);
 
 module.exports = router;

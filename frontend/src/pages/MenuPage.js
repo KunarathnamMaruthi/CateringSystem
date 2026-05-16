@@ -15,10 +15,15 @@ function MenuPage() {
   // Fetch menus
   const fetchMenus = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/menus");
+      const res = await axios.get(
+        "http://3.106.114.80:5000/api/menus"
+      );
+
       setMenus(res.data);
+
     } catch (error) {
       console.log(error);
+
       alert("Failed to load menus");
     }
   };
@@ -31,7 +36,8 @@ function MenuPage() {
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
@@ -42,17 +48,35 @@ function MenuPage() {
     try {
       const formData = new FormData();
 
-      formData.append("name", form.name);
-      formData.append("category", form.category);
-      formData.append("price", form.price);
-      formData.append("description", form.description);
+      formData.append(
+        "name",
+        form.name
+      );
+
+      formData.append(
+        "category",
+        form.category
+      );
+
+      formData.append(
+        "price",
+        form.price
+      );
+
+      formData.append(
+        "description",
+        form.description
+      );
 
       if (form.image) {
-        formData.append("image", form.image);
+        formData.append(
+          "image",
+          form.image
+        );
       }
 
       await axios.post(
-        "http://localhost:5000/api/menus",
+        "http://3.106.114.80:5000/api/menus",
         formData
       );
 
@@ -66,9 +90,13 @@ function MenuPage() {
 
       fetchMenus();
 
-      alert("Food menu added successfully!");
+      alert(
+        "Food menu added successfully!"
+      );
+
     } catch (error) {
       console.log(error);
+
       alert("Failed to add menu");
     }
   };
@@ -77,12 +105,14 @@ function MenuPage() {
   const deleteMenu = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/menus/${id}`
+        `http://3.106.114.80:5000/api/menus/${id}`
       );
 
       fetchMenus();
+
     } catch (error) {
       console.log(error);
+
       alert("Failed to delete menu");
     }
   };
@@ -94,7 +124,10 @@ function MenuPage() {
       </h1>
 
       {/* Add Menu Form */}
-      <form onSubmit={addMenu} style={styles.form}>
+      <form
+        onSubmit={addMenu}
+        style={styles.form}
+      >
         {/* Food Name */}
         <input
           type="text"
@@ -149,7 +182,9 @@ function MenuPage() {
 
         {/* Price */}
         <div style={styles.priceContainer}>
-          <span style={styles.dollar}>$</span>
+          <span style={styles.dollar}>
+            $
+          </span>
 
           <input
             type="number"
@@ -178,14 +213,18 @@ function MenuPage() {
           onChange={(e) =>
             setForm({
               ...form,
-              image: e.target.files[0],
+              image:
+                e.target.files[0],
             })
           }
           style={styles.input}
         />
 
         {/* Submit Button */}
-        <button type="submit" style={styles.button}>
+        <button
+          type="submit"
+          style={styles.button}
+        >
           Add Food Menu
         </button>
       </form>
@@ -193,7 +232,10 @@ function MenuPage() {
       {/* Menu Cards */}
       <div style={styles.grid}>
         {menus.map((menu) => (
-          <div key={menu._id} style={styles.card}>
+          <div
+            key={menu._id}
+            style={styles.card}
+          >
             {menu.imageUrl && (
               <img
                 src={menu.imageUrl}
@@ -205,7 +247,9 @@ function MenuPage() {
             <h2>{menu.name}</h2>
 
             <p>
-              <strong>Category:</strong>{" "}
+              <strong>
+                Category:
+              </strong>{" "}
               {menu.category}
             </p>
 
@@ -214,13 +258,17 @@ function MenuPage() {
               {menu.price}
             </p>
 
-            <p>{menu.description}</p>
+            <p>
+              {menu.description}
+            </p>
 
             <button
               onClick={() =>
                 deleteMenu(menu._id)
               }
-              style={styles.deleteButton}
+              style={
+                styles.deleteButton
+              }
             >
               Delete
             </button>
@@ -251,8 +299,10 @@ const styles = {
     background: "white",
     padding: "20px",
     borderRadius: "10px",
+
     boxShadow:
       "0 2px 10px rgba(0,0,0,0.1)",
+
     display: "flex",
     flexDirection: "column",
     gap: "15px",
@@ -287,8 +337,10 @@ const styles = {
   grid: {
     marginTop: "40px",
     display: "grid",
+
     gridTemplateColumns:
       "repeat(auto-fit, minmax(250px, 1fr))",
+
     gap: "20px",
   },
 
@@ -296,6 +348,7 @@ const styles = {
     background: "white",
     borderRadius: "10px",
     padding: "15px",
+
     boxShadow:
       "0 2px 10px rgba(0,0,0,0.1)",
   },
@@ -319,7 +372,7 @@ const styles = {
     width: "100%",
   },
 
-  // Price Styles
+  // Price styles
   priceContainer: {
     display: "flex",
     alignItems: "center",

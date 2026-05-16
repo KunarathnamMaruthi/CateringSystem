@@ -7,7 +7,7 @@ export default function Admin() {
   const [editData, setEditData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔒 Protect admin
+  // Protect admin
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
@@ -48,7 +48,7 @@ export default function Admin() {
     }
   };
 
-  // 🔹 DELETE
+  //DELETE
   const deleteBooking = async (id) => {
     if (!window.confirm("Are you sure?")) return;
 
@@ -63,7 +63,7 @@ export default function Admin() {
     }
   };
 
-  // 🔹 EDIT
+  //EDIT
   const editBooking = (booking) => {
     setEditData(booking);
   };

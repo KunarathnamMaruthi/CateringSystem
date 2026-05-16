@@ -1,6 +1,9 @@
 import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+
 import API from "../api/api";
+
 import "../App.css";
 
 function Register() {
@@ -12,45 +15,72 @@ function Register() {
     password: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
   const handleChange = (e) => {
     setData({
       ...data,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
   const handleRegister = async () => {
     try {
-      // validation
-      if (!data.name || !data.email || !data.password) {
-        return alert("Please fill all fields");
+      // Validation
+      if (
+        !data.name ||
+        !data.email ||
+        !data.password
+      ) {
+        return alert(
+          "Please fill all fields"
+        );
       }
 
-      if (!data.email.includes("@")) {
-        return alert("Enter a valid email");
+      if (
+        !data.email.includes("@")
+      ) {
+        return alert(
+          "Enter a valid email"
+        );
       }
 
-      if (data.password.length < 6) {
-        return alert("Password must be at least 6 characters");
+      if (
+        data.password.length < 6
+      ) {
+        return alert(
+          "Password must be at least 6 characters"
+        );
       }
 
       setLoading(true);
 
-      const res = await API.post("/users/register", data);
+      const res = await API.post(
+        "/users/register",
+        data
+      );
 
-      alert("Registered Successfully!");
+      alert(
+        "Registered Successfully!"
+      );
 
       console.log(res.data);
 
       navigate("/login");
+
     } catch (err) {
-      console.error(err.response?.data || err.message);
+      console.error(
+        err.response?.data ||
+          err.message
+      );
 
       alert(
-        err.response?.data?.message || "Register failed"
+        err.response?.data?.message ||
+          "Register failed"
       );
+
     } finally {
       setLoading(false);
     }
@@ -69,6 +99,7 @@ function Register() {
         />
 
         <input
+          type="email"
           name="email"
           placeholder="Email"
           value={data.email}
@@ -76,8 +107,9 @@ function Register() {
         />
 
         <input
-          name="password"
           type="password"
+          autoComplete="new-password"
+          name="password"
           placeholder="Password"
           value={data.password}
           onChange={handleChange}
@@ -87,13 +119,17 @@ function Register() {
           onClick={handleRegister}
           disabled={loading}
         >
-          {loading ? "Registering..." : "Register"}
+          {loading
+            ? "Registering..."
+            : "Register"}
         </button>
 
         <p>
           Already have an account?{" "}
           <span
-            onClick={() => navigate("/login")}
+            onClick={() =>
+              navigate("/login")
+            }
             style={{
               color: "blue",
               cursor: "pointer",

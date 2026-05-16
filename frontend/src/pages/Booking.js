@@ -1,17 +1,20 @@
 import { useState } from "react";
 import API from "../api/api";
+
 import "../App.css";
 
 export default function Booking() {
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
+
+  const [loading, setLoading] =
+    useState(false);
 
   const [data, setData] = useState({
     name: "",
     email: "",
     phone: "",
     address: "",
-    guests: "",
+    guests: 0,
     eventDate: "",
     category: "",
     time: "",
@@ -21,7 +24,8 @@ export default function Booking() {
   const handleChange = (e) => {
     setData({
       ...data,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
@@ -33,12 +37,16 @@ export default function Booking() {
       !data.eventDate ||
       !data.category
     ) {
-      alert("Please fill all required fields");
+      alert(
+        "Please fill all required fields"
+      );
+
       return;
     }
 
     try {
-      const token = localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token");
 
       if (!token) {
         alert("Please login first");
@@ -47,18 +55,28 @@ export default function Booking() {
 
       setLoading(true);
 
-      const res = await API.post("/bookings", data);
+      console.log(data);
 
-      console.log("SUCCESS:", res.data);
+      const res = await API.post(
+        "/bookings",
+        data
+      );
 
-      alert("Booking Submitted Successfully!");
+      console.log(
+        "SUCCESS:",
+        res.data
+      );
+
+      alert(
+        "Booking Submitted Successfully!"
+      );
 
       setData({
         name: "",
         email: "",
         phone: "",
         address: "",
-        guests: "",
+        guests: 0,
         eventDate: "",
         category: "",
         time: "",
@@ -66,10 +84,18 @@ export default function Booking() {
       });
 
       setStep(1);
-    } catch (err) {
-      console.log("ERROR:", err.response?.data);
 
-      alert(err.response?.data?.message || "Booking failed");
+    } catch (err) {
+      console.log(
+        "ERROR:",
+        err.response?.data
+      );
+
+      alert(
+        err.response?.data?.message ||
+          "Booking failed"
+      );
+
     } finally {
       setLoading(false);
     }
@@ -110,7 +136,13 @@ export default function Booking() {
               onChange={handleChange}
             />
 
-            <button onClick={() => setStep(2)}>Next</button>
+            <button
+              onClick={() =>
+                setStep(2)
+              }
+            >
+              Next
+            </button>
           </>
         )}
 
@@ -121,11 +153,25 @@ export default function Booking() {
               value={data.guests}
               onChange={handleChange}
             >
-              <option value="">Select Guests</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <option value="150">150</option>
-              <option value="200">200</option>
+              <option value="">
+                Select Guests
+              </option>
+
+              <option value="50">
+                50
+              </option>
+
+              <option value="100">
+                100
+              </option>
+
+              <option value="150">
+                150
+              </option>
+
+              <option value="200">
+                200
+              </option>
             </select>
 
             <input
@@ -140,10 +186,21 @@ export default function Booking() {
               value={data.category}
               onChange={handleChange}
             >
-              <option value="">Select Category</option>
-              <option value="Wedding">Wedding</option>
-              <option value="Birthday">Birthday</option>
-              <option value="Corporate">Corporate</option>
+              <option value="">
+                Select Category
+              </option>
+
+              <option value="Wedding">
+                Wedding
+              </option>
+
+              <option value="Birthday">
+                Birthday
+              </option>
+
+              <option value="Corporate">
+                Corporate
+              </option>
             </select>
 
             <input
@@ -153,14 +210,27 @@ export default function Booking() {
               onChange={handleChange}
             />
 
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button onClick={() => setStep(1)}>Back</button>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <button
+                onClick={() =>
+                  setStep(1)
+                }
+              >
+                Back
+              </button>
 
               <button
                 onClick={handleSubmit}
                 disabled={loading}
               >
-                {loading ? "Submitting..." : "Submit"}
+                {loading
+                  ? "Submitting..."
+                  : "Submit"}
               </button>
             </div>
           </>
