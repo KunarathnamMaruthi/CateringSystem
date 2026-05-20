@@ -1,123 +1,308 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import API from "../api/api";
 
-function MyBookings() {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
+import "../App.css";
 
-  //  Fetch bookings
-  const fetchBookings = async () => {
-    try {
-      setLoading(true);
-      const res = await API.get("/bookings");
-      setBookings(res.data);
-    } catch (err) {
-      console.log("FETCH ERROR:", err.response?.data);
-      alert("Failed to fetch bookings");
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function MyBookings() {
+
+  const [bookings, setBookings] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [actionLoading, setActionLoading] =
+    useState(false);
+
+  // ================= FETCH BOOKINGS =================
+  const fetchBookings =
+    async () => {
+
+      try {
+
+        setLoading(true);
+
+        const res =
+          await API.get(
+            "/bookings"
+          );
+
+        setBookings(
+          res.data.bookings || []
+        );
+
+      } catch (err) {
+
+        console.log(
+          "FETCH ERROR:",
+          err.response?.data
+        );
+
+        alert(
+          "Failed to fetch bookings"
+        );
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
 
   useEffect(() => {
     fetchBookings();
   }, []);
 
-  // 🔹 Delete booking
-  const handleDelete = async (id) => {
-    if (!window.confirm("Cancel this booking?")) return;
+  // ================= DELETE =================
+  const handleDelete =
+    async (id) => {
 
-    try {
-      setActionLoading(true);
-      await API.delete(`/bookings/${id}`);
-      alert("Booking cancelled");
-      fetchBookings();
-    } catch (err) {
-      console.log("DELETE ERROR:", err.response?.data);
-      alert(err.response?.data?.message || "Delete failed");
-    } finally {
-      setActionLoading(false);
-    }
-  };
+      if (
+        !window.confirm(
+          "Cancel this booking?"
+        )
+      ) {
+        return;
+      }
 
-  // 🔹 Edit booking
-  const handleEdit = async (id) => {
-    const newGuests = prompt("Enter new guest count:");
+      try {
 
-    //  prevent invalid input
-    if (!newGuests || isNaN(newGuests) || Number(newGuests) <= 0) {
-      return alert("Please enter a valid number");
-    }
+        setActionLoading(true);
 
-    try {
-      setActionLoading(true);
+        await API.delete(
+          `/bookings/${id}`
+        );
 
-      await API.put(`/bookings/${id}`, {
-        guests: Number(newGuests),
-      });
+        alert(
+          "Booking cancelled"
+        );
 
-      alert("Booking updated");
-      fetchBookings();
-    } catch (err) {
-      console.log("UPDATE ERROR:", err.response?.data);
-      alert(err.response?.data?.message || "Update failed");
-    } finally {
-      setActionLoading(false);
-    }
-  };
+        fetchBookings();
+
+      } catch (err) {
+
+        console.log(
+          "DELETE ERROR:",
+          err.response?.data
+        );
+
+        alert(
+          err.response?.data?.message ||
+          "Delete failed"
+        );
+
+      } finally {
+
+        setActionLoading(false);
+      }
+    };
+
+  // ================= EDIT =================
+  const handleEdit =
+    async (id) => {
+
+      const newGuests =
+        prompt(
+          "Enter new guest count:"
+        );
+
+      if (
+        !newGuests ||
+        isNaN(newGuests) ||
+        Number(newGuests) <= 0
+      ) {
+
+        return alert(
+          "Please enter a valid number"
+        );
+      }
+
+      try {
+
+        setActionLoading(true);
+
+        await API.put(
+          `/bookings/${id}`,
+          {
+            guests:
+              Number(newGuests),
+          }
+        );
+
+        alert(
+          "Booking updated"
+        );
+
+        fetchBookings();
+
+      } catch (err) {
+
+        console.log(
+          "UPDATE ERROR:",
+          err.response?.data
+        );
+
+        alert(
+          err.response?.data?.message ||
+          "Update failed"
+        );
+
+      } finally {
+
+        setActionLoading(false);
+      }
+    };
 
   return (
+
     <div className="page-container">
-      <div className="card" style={{ width: "500px" }}>
-        <h2>My Bookings</h2>
+
+      <div className="my-bookings-page">
+
+        <h1>
+          My Bookings
+        </h1>
+
+        <p>
+          View and manage your catering reservations
+        </p>
 
         {loading ? (
-          <p>Loading...</p>
+
+          <h2>
+            Loading...
+          </h2>
+
         ) : bookings.length === 0 ? (
-          <p>No bookings found</p>
+
+          <div className="empty-box">
+
+            <h2>
+              No bookings found
+            </h2>
+
+          </div>
+
         ) : (
-          bookings.map((b) => (
-            <div className="booking-box" key={b._id}>
-              <div className="booking-grid">
-                <p><b>Name:</b> {b.name}</p>
-                <p><b>Email:</b> {b.email}</p>
-                <p><b>Phone:</b> {b.phone}</p>
-                <p><b>Guests:</b> {b.guests}</p>
 
-                <p>
-                  <b>Date:</b>{" "}
-                  {b.eventDate
-                    ? new Date(b.eventDate).toLocaleDateString("en-AU")
-                    : "-"}
-                </p>
+          <div className="bookings-grid">
 
-                <p><b>Time:</b> {b.time}</p>
-                <p><b>Category:</b> {b.category}</p>
-                <p><b>Address:</b> {b.address}</p>
+            {bookings.map((b) => (
+
+              <div
+                className="booking-card"
+                key={b._id}
+              >
+
+                <div className="booking-top">
+
+                  <h2>
+                    {b.category}
+                  </h2>
+
+                  <span
+                    className={`status-badge ${b.status}`}
+                  >
+                    {b.status}
+                  </span>
+
+                </div>
+
+                <div className="booking-details">
+
+                  <p>
+                    <b>Name:</b>
+                    {" "}
+                    {b.name}
+                  </p>
+
+                  <p>
+                    <b>Email:</b>
+                    {" "}
+                    {b.email}
+                  </p>
+
+                  <p>
+                    <b>Phone:</b>
+                    {" "}
+                    {b.phone}
+                  </p>
+
+                  <p>
+                    <b>Guests:</b>
+                    {" "}
+                    {b.guests}
+                  </p>
+
+                  <p>
+                    <b>Date:</b>
+                    {" "}
+
+                    {b.eventDate
+                      ? new Date(
+                          b.eventDate
+                        ).toLocaleDateString(
+                          "en-AU"
+                        )
+                      : "-"}
+
+                  </p>
+
+                  <p>
+                    <b>Time:</b>
+                    {" "}
+                    {b.time}
+                  </p>
+
+                  <p>
+                    <b>Address:</b>
+                    {" "}
+                    {b.address}
+                  </p>
+
+                </div>
+
+                {/* ACTIONS */}
+
+                <div className="booking-buttons">
+
+                  <button
+                    className="btn-blue"
+                    onClick={() =>
+                      handleEdit(
+                        b._id
+                      )
+                    }
+                    disabled={actionLoading}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="btn-red"
+                    onClick={() =>
+                      handleDelete(
+                        b._id
+                      )
+                    }
+                    disabled={actionLoading}
+                  >
+                    Cancel
+                  </button>
+
+                </div>
+
               </div>
+            ))}
 
-              <div className="booking-actions">
-                <button
-                  onClick={() => handleEdit(b._id)}
-                  disabled={actionLoading}
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => handleDelete(b._id)}
-                  disabled={actionLoading}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          ))
+          </div>
         )}
+
       </div>
+
     </div>
   );
 }
-
-export default MyBookings;

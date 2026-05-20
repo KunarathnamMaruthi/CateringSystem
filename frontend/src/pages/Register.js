@@ -1,24 +1,32 @@
 import { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import API from "../api/api";
 
 import "../App.css";
 
-function Register() {
-  const navigate = useNavigate();
+export default function Register() {
 
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const navigate =
+    useNavigate();
+
+  const [data, setData] =
+    useState({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
 
   const [loading, setLoading] =
     useState(false);
 
+  // ================= HANDLE INPUT =================
   const handleChange = (e) => {
+
     setData({
       ...data,
       [e.target.name]:
@@ -26,121 +34,189 @@ function Register() {
     });
   };
 
-  const handleRegister = async () => {
-    try {
-      // Validation
+  // ================= REGISTER =================
+  const handleRegister =
+    async () => {
+
+      // VALIDATION
       if (
         !data.name ||
         !data.email ||
-        !data.password
+        !data.password ||
+        !data.confirmPassword
       ) {
+
         return alert(
           "Please fill all fields"
         );
       }
 
+      // EMAIL CHECK
       if (
         !data.email.includes("@")
       ) {
+
         return alert(
           "Enter a valid email"
         );
       }
 
+      // PASSWORD LENGTH
       if (
         data.password.length < 6
       ) {
+
         return alert(
           "Password must be at least 6 characters"
         );
       }
 
-      setLoading(true);
+      // PASSWORD MATCH
+      if (
+        data.password !==
+        data.confirmPassword
+      ) {
 
-      const res = await API.post(
-        "/users/register",
-        data
-      );
+        return alert(
+          "Passwords do not match"
+        );
+      }
 
-      alert(
-        "Registered Successfully!"
-      );
+      try {
 
-      console.log(res.data);
+        setLoading(true);
 
-      navigate("/login");
+        const res =
+          await API.post(
+            "/users/register",
+            {
+              name: data.name,
+              email: data.email,
+              password:
+                data.password,
+            }
+          );
 
-    } catch (err) {
-      console.error(
-        err.response?.data ||
+        console.log(
+          res.data
+        );
+
+        alert(
+          "Registered Successfully!"
+        );
+
+        navigate("/login");
+
+      } catch (err) {
+
+        console.error(
+          err.response?.data ||
           err.message
-      );
+        );
 
-      alert(
-        err.response?.data?.message ||
+        alert(
+          err.response?.data?.message ||
           "Register failed"
-      );
+        );
 
-    } finally {
-      setLoading(false);
-    }
-  };
+      } finally {
+
+        setLoading(false);
+      }
+    };
 
   return (
+
     <div className="page-container">
-      <div className="card">
-        <h2>Register Account</h2>
 
-        <input
-          name="name"
-          placeholder="Name"
-          value={data.name}
-          onChange={handleChange}
-        />
+      <div className="auth-wrapper">
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={data.email}
-          onChange={handleChange}
-        />
+        <div className="auth-card">
 
-        <input
-          type="password"
-          autoComplete="new-password"
-          name="password"
-          placeholder="Password"
-          value={data.password}
-          onChange={handleChange}
-        />
+          <h1>
+            Create Account 🚀
+          </h1>
 
-        <button
-          onClick={handleRegister}
-          disabled={loading}
-        >
-          {loading
-            ? "Registering..."
-            : "Register"}
-        </button>
+          <p>
+            Register to start booking catering services
+          </p>
 
-        <p>
-          Already have an account?{" "}
-          <span
-            onClick={() =>
-              navigate("/login")
-            }
-            style={{
-              color: "blue",
-              cursor: "pointer",
-            }}
+          {/* NAME */}
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={data.name}
+            onChange={handleChange}
+          />
+
+          {/* EMAIL */}
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={data.email}
+            onChange={handleChange}
+          />
+
+          {/* PASSWORD */}
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            autoComplete="new-password"
+            value={data.password}
+            onChange={handleChange}
+          />
+
+          {/* CONFIRM PASSWORD */}
+
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            autoComplete="new-password"
+            value={data.confirmPassword}
+            onChange={handleChange}
+          />
+
+          {/* BUTTON */}
+
+          <button
+            className="btn-green"
+            onClick={handleRegister}
+            disabled={loading}
           >
-            Login Here
-          </span>
-        </p>
+
+            {loading
+              ? "Registering..."
+              : "Register"}
+
+          </button>
+
+          {/* LOGIN */}
+
+          <p className="auth-link">
+
+            Already have an account?
+
+            <span
+              onClick={() =>
+                navigate("/login")
+              }
+            >
+              Login Here
+            </span>
+
+          </p>
+
+        </div>
+
       </div>
+
     </div>
   );
 }
-
-export default Register;

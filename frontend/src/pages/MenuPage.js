@@ -1,400 +1,249 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function MenuPage() {
-  const [menus, setMenus] = useState([]);
+import {
+  useNavigate,
+} from "react-router-dom";
 
-  const [form, setForm] = useState({
-    name: "",
-    category: "",
-    price: "",
-    description: "",
-    image: null,
-  });
+import "./MenuPage.css";
 
-  // Fetch menus
-  const fetchMenus = async () => {
-    try {
-      const res = await axios.get(
-        "http://3.106.114.80:5000/api/menus"
-      );
+export default function MenuPage() {
 
-      setMenus(res.data);
+  const [menus, setMenus] =
+    useState([]);
 
-    } catch (error) {
-      console.log(error);
+  const [selectedCategory,
+    setSelectedCategory] =
+    useState("All");
 
-      alert("Failed to load menus");
-    }
-  };
+  const navigate =
+    useNavigate();
 
   useEffect(() => {
     fetchMenus();
   }, []);
 
-  // Handle text input
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]:
-        e.target.value,
-    });
-  };
+  // FETCH MENUS
 
-  // Add menu
-  const addMenu = async (e) => {
-    e.preventDefault();
+  const fetchMenus = async () => {
 
     try {
-      const formData = new FormData();
 
-      formData.append(
-        "name",
-        form.name
+      const res = await axios.get(
+        "http://localhost:5000/api/menu"
       );
 
-      formData.append(
-        "category",
-        form.category
-      );
+      console.log(res.data);
 
-      formData.append(
-        "price",
-        form.price
-      );
+      if (
+        Array.isArray(res.data)
+      ) {
 
-      formData.append(
-        "description",
-        form.description
-      );
+        setMenus(res.data);
 
-      if (form.image) {
-        formData.append(
-          "image",
-          form.image
+      } else if (
+        Array.isArray(
+          res.data.menus
+        )
+      ) {
+
+        setMenus(
+          res.data.menus
         );
+
+      } else {
+
+        setMenus([]);
+
       }
 
-      await axios.post(
-        "http://3.106.114.80:5000/api/menus",
-        formData
-      );
-
-      setForm({
-        name: "",
-        category: "",
-        price: "",
-        description: "",
-        image: null,
-      });
-
-      fetchMenus();
-
-      alert(
-        "Food menu added successfully!"
-      );
-
     } catch (error) {
+
       console.log(error);
 
-      alert("Failed to add menu");
+      setMenus([]);
+
     }
   };
 
-  // Delete menu
-  const deleteMenu = async (id) => {
-    try {
-      await axios.delete(
-        `http://3.106.114.80:5000/api/menus/${id}`
-      );
+  // FILTER MENUS
 
-      fetchMenus();
-
-    } catch (error) {
-      console.log(error);
-
-      alert("Failed to delete menu");
-    }
-  };
+  const filteredMenus =
+    selectedCategory === "All"
+      ? menus
+      : menus.filter(
+          (item) =>
+            item.category ===
+            selectedCategory
+        );
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>
-        Catering Food Menu
-      </h1>
 
-      {/* Add Menu Form */}
-      <form
-        onSubmit={addMenu}
-        style={styles.form}
-      >
-        {/* Food Name */}
-        <input
-          type="text"
-          name="name"
-          placeholder="Food Name"
-          value={form.name}
-          onChange={handleChange}
-          style={styles.input}
-          required
-        />
+    <div className="menu-page">
 
-        {/* Category */}
-        <select
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          style={styles.input}
-          required
-        >
-          <option value="">
-            Select Catering Category
-          </option>
+      {/* TOP SECTION */}
 
-          <option value="Wedding Catering">
-            Wedding Catering
-          </option>
+      <div className="top-section">
 
-          <option value="Corporate Catering">
-            Corporate Catering
-          </option>
+        <h1 className="menu-title">
+          Catering Menu
+        </h1>
 
-          <option value="Social Events Catering">
-            Social Events Catering
-          </option>
+        {/* FILTER */}
 
-          <option value="Private Parties Catering">
-            Private Parties Catering
-          </option>
+        <div className="filter-container">
 
-          <option value="Cocktail and Reception Catering">
-            Cocktail and Reception Catering
-          </option>
+          <select
+            className="filter-select"
+            value={
+              selectedCategory
+            }
+            onChange={(e) =>
+              setSelectedCategory(
+                e.target.value
+              )
+            }
+          >
 
-          <option value="Drop and Go Catering">
-            Drop and Go Catering
-          </option>
+            <option value="All">
+              All Categories
+            </option>
 
-          <option value="Outdoor and Barbeque Catering">
-            Outdoor and Barbeque Catering
-          </option>
-        </select>
+            <option value="Wedding">
+              Wedding Catering
+            </option>
 
-        {/* Price */}
-        <div style={styles.priceContainer}>
-          <span style={styles.dollar}>
-            $
-          </span>
+            <option value="Birthday">
+              Birthday Party
+            </option>
 
-          <input
-            type="number"
-            name="price"
-            placeholder="0.00"
-            value={form.price}
-            onChange={handleChange}
-            style={styles.priceInput}
-            required
-          />
+            <option value="Corporate">
+              Corporate Event
+            </option>
+
+            <option value="Private">
+              Private Event
+            </option>
+
+          </select>
+
         </div>
 
-        {/* Description */}
-        <textarea
-          name="description"
-          placeholder="Food Description"
-          value={form.description}
-          onChange={handleChange}
-          style={styles.textarea}
-        />
-
-        {/* Upload Image */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) =>
-            setForm({
-              ...form,
-              image:
-                e.target.files[0],
-            })
-          }
-          style={styles.input}
-        />
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          style={styles.button}
-        >
-          Add Food Menu
-        </button>
-      </form>
-
-      {/* Menu Cards */}
-      <div style={styles.grid}>
-        {menus.map((menu) => (
-          <div
-            key={menu._id}
-            style={styles.card}
-          >
-            {menu.imageUrl && (
-              <img
-                src={menu.imageUrl}
-                alt={menu.name}
-                style={styles.image}
-              />
-            )}
-
-            <h2>{menu.name}</h2>
-
-            <p>
-              <strong>
-                Category:
-              </strong>{" "}
-              {menu.category}
-            </p>
-
-            <p>
-              <strong>Price:</strong> $
-              {menu.price}
-            </p>
-
-            <p>
-              {menu.description}
-            </p>
-
-            <button
-              onClick={() =>
-                deleteMenu(menu._id)
-              }
-              style={
-                styles.deleteButton
-              }
-            >
-              Delete
-            </button>
-          </div>
-        ))}
       </div>
+
+      {/* MENU GRID */}
+
+      <div className="menu-grid">
+
+        {filteredMenus.length > 0 ? (
+
+          filteredMenus.map(
+            (item) => (
+
+            <div
+              key={item._id}
+              className="menu-card"
+            >
+
+              {/* IMAGE */}
+
+              <img
+                src={
+                  item.image ||
+                  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
+                }
+                alt={item.name}
+                className="menu-image"
+              />
+
+              {/* CONTENT */}
+
+              <div className="menu-content">
+
+                {/* NAME */}
+
+                <h2 className="menu-name">
+                  {item.name}
+                </h2>
+
+                {/* CATEGORY */}
+
+                <p className="menu-category">
+                  {item.category}
+                </p>
+
+                {/* DESCRIPTION */}
+
+                <p className="menu-description">
+                  {item.description}
+                </p>
+
+                {/* PRICE */}
+
+                <h3 className="menu-price">
+                  ${item.price}
+                </h3>
+
+                {/* OFFER */}
+
+                {item.offer && (
+
+                  <p className="menu-offer">
+
+                    🎉 {item.offer}
+
+                  </p>
+
+                )}
+
+                {/* ORDER BUTTON */}
+
+                <button
+                  className="order-btn"
+                  onClick={() =>
+                    navigate(
+                      "/booking",
+                      {
+                        state: {
+                          menuName:
+                            item.name,
+
+                          category:
+                            item.category,
+
+                          price:
+                            item.price,
+
+                          image:
+                            item.image,
+                        },
+                      }
+                    )
+                  }
+                >
+
+                  Order Now
+
+                </button>
+
+              </div>
+
+            </div>
+
+          ))
+
+        ) : (
+
+          <h2 className="no-menu">
+
+            No Menu Items Found
+
+          </h2>
+
+        )}
+
+      </div>
+
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    padding: "30px",
-    background: "#f4f4f4",
-    fontFamily: "Arial",
-  },
-
-  title: {
-    textAlign: "center",
-    color: "#ff7a00",
-    marginBottom: "30px",
-  },
-
-  form: {
-    maxWidth: "500px",
-    margin: "0 auto",
-    background: "white",
-    padding: "20px",
-    borderRadius: "10px",
-
-    boxShadow:
-      "0 2px 10px rgba(0,0,0,0.1)",
-
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-  },
-
-  input: {
-    padding: "12px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    fontSize: "16px",
-  },
-
-  textarea: {
-    padding: "12px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    fontSize: "16px",
-    minHeight: "100px",
-  },
-
-  button: {
-    padding: "12px",
-    background: "#ff7a00",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "16px",
-    fontWeight: "bold",
-  },
-
-  grid: {
-    marginTop: "40px",
-    display: "grid",
-
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(250px, 1fr))",
-
-    gap: "20px",
-  },
-
-  card: {
-    background: "white",
-    borderRadius: "10px",
-    padding: "15px",
-
-    boxShadow:
-      "0 2px 10px rgba(0,0,0,0.1)",
-  },
-
-  image: {
-    width: "100%",
-    height: "200px",
-    objectFit: "cover",
-    borderRadius: "10px",
-    marginBottom: "10px",
-  },
-
-  deleteButton: {
-    marginTop: "10px",
-    padding: "10px",
-    background: "red",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    width: "100%",
-  },
-
-  // Price styles
-  priceContainer: {
-    display: "flex",
-    alignItems: "center",
-    border: "1px solid #ccc",
-    borderRadius: "5px",
-    background: "white",
-  },
-
-  dollar: {
-    padding: "12px",
-    fontSize: "18px",
-    fontWeight: "bold",
-    color: "#555",
-  },
-
-  priceInput: {
-    flex: 1,
-    padding: "12px",
-    border: "none",
-    outline: "none",
-    fontSize: "16px",
-  },
-};
-
-export default MenuPage;

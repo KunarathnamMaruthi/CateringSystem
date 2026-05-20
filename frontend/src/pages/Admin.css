@@ -1,0 +1,389 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+/* ================= PAGE ================= */
+
+.admin-page{
+  min-height:100vh;
+  background:linear-gradient(
+    90deg,
+    #24834d,
+    #92b8ad
+  );
+  padding:90px 20px 30px;
+}
+
+.admin-container{
+  max-width:1400px;
+  margin:auto;
+}
+
+/* ================= HEADER ================= */
+
+.admin-header{
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  margin-bottom:25px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+.admin-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.admin-title{
+  font-size:30px;
+  color:#0d5d2f;
+  margin-bottom:5px;
+}
+
+.admin-subtitle{
+  color:#666;
+  font-size:15px;
+}
+
+.admin-profile{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+/* ================= ADMIN BADGE ================= */
+
+/*.admin-avatar{
+  background:#0d8b3d;
+  color:white;
+  padding:12px 18px;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:bold;
+}*/
+
+/* ================= ADD MENU ================= */
+
+.add-menu-btn{
+  background:#0d8b3d;
+  color:white;
+  border:none;
+  padding:12px 22px;
+  border-radius:10px;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.add-menu-btn:hover{
+  background:#09692e;
+  transform:translateY(-4px);
+}
+
+/* ================= SEARCH ================= */
+
+.search-input{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#f3f3f3;
+  font-size:15px;
+  outline:none;
+  margin-bottom:25px;
+}
+
+.search-input:focus{
+  border:2px solid #22c55e;
+}
+
+/* ================= STATS ================= */
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.stat-card{
+  background:white;
+  padding:20px;
+  min-height:75px;
+  border-radius:18px;
+  text-align:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+  transition:0.3s;
+}
+
+.stat-card:hover{
+  transform:translateY(-3px);
+}
+
+.stat-card h3{
+  color:#666;
+  margin-bottom:8px;
+  font-size:18px;
+}
+
+.stat-card p{
+  font-size:15px;
+  font-weight:bold;
+  color:#0d5d2f;
+}
+
+.total{
+  border-top:5px solid #3b82f6;
+  
+}
+
+.approved{
+  border-top:5px solid #22c55e;
+}
+
+.pending{
+  border-top:5px solid #f59e0b;
+}
+
+.cancelled{
+  border-top:5px solid #ef4444;
+}
+
+/* ================= TABLE SECTION ================= */
+
+.booking-section{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  margin-top:30px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.section-title{
+  font-size:28px;
+  color:#0d5d2f;
+}
+
+/* ================= TABLE ================= */
+
+.table-container{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead{
+  background:#0d5d2f;
+  color:white;
+}
+
+th{
+  padding:18px;
+  text-align:center;
+  font-size:15px;
+}
+
+td{
+  padding:20px;
+  text-align:center;
+  border-bottom:1px solid #ddd;
+  font-size:14px;
+}
+
+tr:hover{
+  background:#f8f8f8;
+}
+
+/* ================= STATUS ================= */
+
+.status-badge{
+  padding:8px 18px;
+  border-radius:30px;
+  color:white;
+  font-size:13px;
+  font-weight:bold;
+  text-transform:capitalize;
+}
+
+.status-badge.pending{
+  background:#f59e0b;
+}
+
+.status-badge.approved{
+  background:#22c55e;
+}
+
+.status-badge.cancelled{
+  background:#ef4444;
+}
+
+.status-badge.preparing{
+  background:#3b82f6;
+}
+
+.status-badge.completed{
+  background:#8b5cf6;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+.action-buttons{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.action-buttons button{
+  border:none;
+  padding:10px;
+  border-radius:8px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+  font-size:13px;
+}
+
+.action-buttons button:hover{
+  transform:scale(1.03);
+  opacity:0.9;
+}
+
+.approve-btn{
+  background:#22c55e;
+}
+
+.cancel-btn{
+  background:#f59e0b;
+}
+
+.edit-btn{
+  background:#3b82f6;
+}
+
+.delete-btn{
+  background:#ef4444;
+}
+
+.track-btn{
+  background:#8b5cf6;
+}
+
+/* ================= INPUT INSIDE TABLE ================= */
+
+td input{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#f3f3f3;
+  outline:none;
+}
+
+/* ================= TRACKING ================= */
+
+.tracking-section{
+  background:white;
+  margin-top:30px;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+.tracking-line{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:40px;
+  position:relative;
+}
+
+.tracking-line::before{
+  content:"";
+  position:absolute;
+  top:35px;
+  left:10%;
+  width:80%;
+  height:5px;
+  background:#d1d5db;
+  z-index:1;
+}
+
+.track-step{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:#d1d5db;
+  color:#333;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-weight:bold;
+  position:relative;
+  z-index:2;
+  font-size:13px;
+}
+
+.track-step.active{
+  background:#22c55e;
+  color:white;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+  .stats-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .admin-page{
+    padding:100px 15px 30px;
+  }
+
+  .stats-grid{
+    grid-template-columns:1fr;
+  }
+
+  .admin-top{
+    flex-direction:column;
+    gap:20px;
+    align-items:flex-start;
+  }
+
+  .admin-title{
+    font-size:28px;
+  }
+
+  .booking-section,
+  .tracking-section,
+  .admin-header{
+    padding:20px;
+  }
+
+  th,
+  td{
+    padding:14px;
+    font-size:13px;
+  }
+
+}

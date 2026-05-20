@@ -1,79 +1,57 @@
-const express = require("express");
-const router = express.Router();
+const express =
+  require("express");
 
-const auth = require("../middleware/auth");
+const router =
+  express.Router();
 
-const Booking = require("../models/Booking");
+const auth =
+  require("../middleware/auth");
 
-const BookingService = require(
-  "../services/BookingService"
-);
+const {
 
-const BookingController = require(
+  createBooking,
+
+  getBookings,
+
+  updateBooking,
+
+  deleteBooking,
+
+} = require(
   "../controllers/BookingController"
 );
 
-// ================= OOP OBJECTS =================
-const bookingService =
-  new BookingService(Booking);
-
-const bookingController =
-  new BookingController(bookingService);
-
 // ================= CREATE BOOKING =================
+
 router.post(
   "/",
   auth,
-  bookingController.create
+  createBooking
 );
 
 // ================= GET BOOKINGS =================
+
 router.get(
   "/",
   auth,
-  bookingController.get
+  getBookings
 );
 
 // ================= UPDATE BOOKING =================
-router.put("/:id", auth, async (req, res) => {
-  try {
-    const updatedBooking =
-      await Booking.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
 
-    res.json({
-      message:
-        "Booking updated successfully",
-      booking: updatedBooking,
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
+router.put(
+  "/:id",
+  auth,
+  updateBooking
+);
 
 // ================= DELETE BOOKING =================
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    await Booking.findByIdAndDelete(
-      req.params.id
-    );
 
-    res.json({
-      message:
-        "Booking deleted successfully",
-    });
+router.delete(
+  "/:id",
+  auth,
+  deleteBooking
+);
 
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
-
-module.exports = router;
+module.exports =
+  router;

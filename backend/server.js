@@ -1,16 +1,32 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
+const express =
+  require("express");
 
-const connectDB = require("./config/db");
+const cors =
+  require("cors");
 
+const dotenv =
+  require("dotenv");
+
+const connectDB =
+  require("./config/db");
+
+const menuRoutes = 
+require("./routes/menuRoutes");
+
+
+app.use("/api/menu", menuRoutes);
+
+//  CONFIG 
 dotenv.config();
 
+//  DATABASE CONNECTION
 connectDB();
 
-const app = express();
+// APP 
+const app =
+  express();
 
-// ================= MIDDLEWARE =================
+//  MIDDLEWARE 
 app.use(cors());
 
 app.use(express.json());
@@ -20,7 +36,8 @@ app.use(
   express.static("uploads")
 );
 
-// ================= ROUTES =================
+
+// ROUTES 
 app.use(
   "/api/users",
   require("./routes/userRoutes")
@@ -32,21 +49,29 @@ app.use(
 );
 
 app.use(
-  "/api/menus",
+  "/api/menu",
   require("./routes/menuRoutes")
 );
 
-// ================= TEST ROUTE =================
+//  TEST ROUTE 
 app.get("/", (req, res) => {
-  res.send("API running...");
+
+  res.send(
+    "API running..."
+  );
 });
 
-// ================= START SERVER =================
+//  START SERVER 
 const PORT =
-  process.env.PORT || 5000;
+  process.env.PORT ||
+  5000;
 
-app.listen(PORT, () =>
-  console.log(
-    `Server running on port ${PORT}`
-  )
+app.listen(
+  PORT,
+  () => {
+
+    console.log(
+      `Server running on port ${PORT}`
+    );
+  }
 );

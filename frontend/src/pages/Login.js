@@ -1,23 +1,30 @@
 import { useState } from "react";
 
-import API from "../api/api";
+import {
+  useNavigate,
+} from "react-router-dom";
 
-import { useNavigate } from "react-router-dom";
+import API from "../api/api";
 
 import "../App.css";
 
 export default function Login() {
-  const navigate = useNavigate();
 
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
+  const navigate =
+    useNavigate();
+
+  const [data, setData] =
+    useState({
+      email: "",
+      password: "",
+    });
 
   const [loading, setLoading] =
     useState(false);
 
+  // ================= HANDLE INPUT =================
   const handleChange = (e) => {
+
     setData({
       ...data,
       [e.target.name]:
@@ -25,126 +32,168 @@ export default function Login() {
     });
   };
 
-  const handleLogin = async () => {
-    try {
-      // Validation
+  // ================= LOGIN =================
+  const handleLogin =
+    async () => {
+
+      // VALIDATION
       if (
         !data.email ||
         !data.password
       ) {
+
         return alert(
           "Please enter email and password"
         );
       }
 
-      setLoading(true);
+      try {
 
-      const res = await API.post(
-        "/users/login",
-        data
-      );
+        setLoading(true);
 
-      // Save token
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+        const res =
+          await API.post(
+            "/users/login",
+            data
+          );
 
-      // Save user
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      );
+        // SAVE TOKEN
+        localStorage.setItem(
+          "token",
+          res.data.token
+        );
 
-      alert("Login successful");
+        // SAVE USER
+        localStorage.setItem(
+          "user",
+          JSON.stringify(
+            res.data.user
+          )
+        );
 
-      // Redirect based on role
-      if (res.data.user?.isAdmin) {
-        navigate("/admin");
-      } else {
-        navigate("/booking");
+        alert(
+          "Login successful"
+        );
+
+        // REDIRECT
+        if (
+          res.data.user?.isAdmin
+        ) {
+
+          navigate("/admin");
+
+        } else {
+
+          navigate("/booking");
+        }
+
+      } catch (err) {
+
+        console.log(
+          "LOGIN ERROR:",
+          err.response?.data
+        );
+
+        alert(
+          err.response?.data?.message ||
+          "Invalid email or password"
+        );
+
+      } finally {
+
+        setLoading(false);
       }
-
-    } catch (err) {
-      console.log(
-        "LOGIN ERROR:",
-        err.response?.data
-      );
-
-      const message =
-        err.response?.data?.message ||
-        "Invalid email or password";
-
-      alert(message);
-
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
   return (
+
     <div className="page-container">
-      <div className="card">
-        <h2>Login</h2>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={data.email}
-          onChange={handleChange}
-        />
+      <div className="auth-wrapper">
 
-        <input
-          type="password"
-          autoComplete="current-password"
-          name="password"
-          placeholder="Password"
-          value={data.password}
-          onChange={handleChange}
-        />
+        <div className="auth-card">
 
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-        >
-          {loading
-            ? "Logging in..."
-            : "Login"}
-        </button>
+          <h1>
+            Welcome Back 👋
+          </h1>
 
-        <p>
-          Don't have an account?{" "}
-          <span
-            onClick={() =>
-              navigate("/register")
-            }
-            style={{
-              color: "blue",
-              cursor: "pointer",
-            }}
+          <p>
+            Login to continue booking catering services
+          </p>
+
+          {/* EMAIL */}
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={data.email}
+            onChange={handleChange}
+          />
+
+          {/* PASSWORD */}
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            autoComplete="current-password"
+            value={data.password}
+            onChange={handleChange}
+          />
+
+          {/* LOGIN BUTTON */}
+
+          <button
+            className="btn-green"
+            onClick={handleLogin}
+            disabled={loading}
           >
-            Register here
-          </span>
-        </p>
 
-        <p>
-          Forgot password?{" "}
-          <span
-            onClick={() =>
-              navigate(
-                "/forgot-password"
-              )
-            }
-            style={{
-              color: "blue",
-              cursor: "pointer",
-            }}
-          >
-            Reset here
-          </span>
-        </p>
+            {loading
+              ? "Logging in..."
+              : "Login"}
+
+          </button>
+
+          {/* REGISTER */}
+
+          <p className="auth-link">
+
+            Don't have an account?
+
+            <span
+              onClick={() =>
+                navigate("/register")
+              }
+            >
+              Register Here
+            </span>
+
+          </p>
+
+          {/* FORGOT PASSWORD */}
+
+          <p className="auth-link">
+
+            Forgot Password?
+
+            <span
+              onClick={() =>
+                navigate(
+                  "/forgot-password"
+                )
+              }
+            >
+              Reset Here
+            </span>
+
+          </p>
+
+        </div>
+
       </div>
+
     </div>
   );
 }

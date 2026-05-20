@@ -1,241 +1,388 @@
 import { useState } from "react";
+
 import API from "../api/api";
 
 import "../App.css";
 
 export default function Booking() {
-  const [step, setStep] = useState(1);
+
+  // ================= STATES =================
+
+  const [step, setStep] =
+    useState(1);
 
   const [loading, setLoading] =
     useState(false);
 
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    guests: 0,
-    eventDate: "",
-    category: "",
-    time: "",
-    status: "pending",
-  });
+  const [data, setData] =
+    useState({
+
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      guests: "",
+      eventDate: "",
+      category: "",
+      time: "",
+      status: "pending",
+    });
+
+  // ================= HANDLE INPUT =================
 
   const handleChange = (e) => {
+
     setData({
+
       ...data,
+
       [e.target.name]:
         e.target.value,
     });
   };
 
-  const handleSubmit = async () => {
-    if (
-      !data.name ||
-      !data.email ||
-      !data.guests ||
-      !data.eventDate ||
-      !data.category
-    ) {
-      alert(
-        "Please fill all required fields"
-      );
+  // ================= SUBMIT BOOKING =================
 
-      return;
-    }
+  const handleSubmit =
+    async () => {
 
-    try {
-      const token =
-        localStorage.getItem("token");
+      // VALIDATION
 
-      if (!token) {
-        alert("Please login first");
+      if (
+
+        !data.name ||
+        !data.email ||
+        !data.phone ||
+        !data.address ||
+        !data.guests ||
+        !data.eventDate ||
+        !data.category ||
+        !data.time
+
+      ) {
+
+        alert(
+          "Please fill all fields"
+        );
+
         return;
       }
 
-      setLoading(true);
+      try {
 
-      console.log(data);
+        setLoading(true);
 
-      const res = await API.post(
-        "/bookings",
-        data
-      );
+        // GET TOKEN
 
-      console.log(
-        "SUCCESS:",
-        res.data
-      );
+        const token =
+          localStorage.getItem(
+            "token"
+          );
 
-      alert(
-        "Booking Submitted Successfully!"
-      );
+        if (!token) {
 
-      setData({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        guests: 0,
-        eventDate: "",
-        category: "",
-        time: "",
-        status: "pending",
-      });
+          alert(
+            "Please login first"
+          );
 
-      setStep(1);
+          return;
+        }
 
-    } catch (err) {
-      console.log(
-        "ERROR:",
-        err.response?.data
-      );
+        // SEND DATA
 
-      alert(
-        err.response?.data?.message ||
+        const res =
+          await API.post(
+
+            "/bookings",
+
+            data,
+
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+        console.log(
+          res.data
+        );
+
+        alert(
+          "Booking Submitted Successfully!"
+        );
+
+        // RESET FORM
+
+        setData({
+
+          name: "",
+          email: "",
+          phone: "",
+          address: "",
+          guests: "",
+          eventDate: "",
+          category: "",
+          time: "",
+          status: "pending",
+        });
+
+        setStep(1);
+
+      } catch (err) {
+
+        console.log(err);
+
+        alert(
+
+          err.response?.data
+            ?.message ||
+
           "Booking failed"
-      );
+        );
 
-    } finally {
-      setLoading(false);
-    }
-  };
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+  // ================= UI =================
 
   return (
+
     <div className="page-container">
-      <div className="card">
-        <h2>Booking Here</h2>
 
-        {step === 1 && (
-          <>
-            <input
-              name="name"
-              placeholder="Full Name"
-              value={data.name}
-              onChange={handleChange}
-            />
+      <div className="booking-layout">
 
-            <input
-              name="email"
-              placeholder="Email"
-              value={data.email}
-              onChange={handleChange}
-            />
+        {/* ================= LEFT SIDE ================= */}
 
-            <input
-              name="phone"
-              placeholder="Phone"
-              value={data.phone}
-              onChange={handleChange}
-            />
+        <div className="booking-form-card">
 
-            <input
-              name="address"
-              placeholder="Address"
-              value={data.address}
-              onChange={handleChange}
-            />
+          <h1>
+            Catering Booking
+          </h1>
 
-            <button
-              onClick={() =>
-                setStep(2)
-              }
-            >
-              Next
-            </button>
-          </>
-        )}
+          <p>
+            Book your perfect catering service
+          </p>
 
-        {step === 2 && (
-          <>
-            <select
-              name="guests"
-              value={data.guests}
-              onChange={handleChange}
-            >
-              <option value="">
-                Select Guests
-              </option>
+          {/* ================= STEP 1 ================= */}
 
-              <option value="50">
-                50
-              </option>
+          {step === 1 && (
 
-              <option value="100">
-                100
-              </option>
+            <>
 
-              <option value="150">
-                150
-              </option>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={data.name}
+                onChange={
+                  handleChange
+                }
+              />
 
-              <option value="200">
-                200
-              </option>
-            </select>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={data.email}
+                onChange={
+                  handleChange
+                }
+              />
 
-            <input
-              type="date"
-              name="eventDate"
-              value={data.eventDate}
-              onChange={handleChange}
-            />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                value={data.phone}
+                onChange={
+                  handleChange
+                }
+              />
 
-            <select
-              name="category"
-              value={data.category}
-              onChange={handleChange}
-            >
-              <option value="">
-                Select Category
-              </option>
+              <textarea
+                name="address"
+                placeholder="Event Address"
+                value={data.address}
+                onChange={
+                  handleChange
+                }
+              />
 
-              <option value="Wedding">
-                Wedding
-              </option>
-
-              <option value="Birthday">
-                Birthday
-              </option>
-
-              <option value="Corporate">
-                Corporate
-              </option>
-            </select>
-
-            <input
-              type="time"
-              name="time"
-              value={data.time}
-              onChange={handleChange}
-            />
-
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-              }}
-            >
               <button
+                className="btn-green"
                 onClick={() =>
-                  setStep(1)
+                  setStep(2)
                 }
               >
-                Back
+                Next Step
               </button>
 
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
+            </>
+          )}
+
+          {/* ================= STEP 2 ================= */}
+
+          {step === 2 && (
+
+            <>
+
+              <select
+                name="guests"
+                value={data.guests}
+                onChange={
+                  handleChange
+                }
               >
-                {loading
-                  ? "Submitting..."
-                  : "Submit"}
-              </button>
-            </div>
-          </>
-        )}
+
+                <option value="">
+                  Select Guests
+                </option>
+
+                <option value="50">
+                  50 Guests
+                </option>
+
+                <option value="100">
+                  100 Guests
+                </option>
+
+                <option value="150">
+                  150 Guests
+                </option>
+
+                <option value="200">
+                  200 Guests
+                </option>
+
+                <option value="500">
+                  500 Guests
+                </option>
+
+              </select>
+
+              <input
+                type="date"
+                name="eventDate"
+                value={
+                  data.eventDate
+                }
+                onChange={
+                  handleChange
+                }
+              />
+
+              <select
+                name="category"
+                value={
+                  data.category
+                }
+                onChange={
+                  handleChange
+                }
+              >
+
+                <option value="">
+                  Select Event Type
+                </option>
+
+                <option value="Wedding">
+                  Wedding Catering
+                </option>
+
+                <option value="Birthday">
+                  Birthday Party
+                </option>
+
+                <option value="Corporate">
+                  Corporate Event
+                </option>
+
+                <option value="Private">
+                  Private Event
+                </option>
+
+              </select>
+
+              <input
+                type="time"
+                name="time"
+                value={data.time}
+                onChange={
+                  handleChange
+                }
+              />
+
+              <div className="booking-buttons">
+
+                <button
+                  className="btn-orange"
+                  onClick={() =>
+                    setStep(1)
+                  }
+                >
+                  Back
+                </button>
+
+                <button
+                  className="btn-green"
+                  onClick={
+                    handleSubmit
+                  }
+                  disabled={
+                    loading
+                  }
+                >
+
+                  {loading
+                    ? "Submitting..."
+                    : "Submit Booking"}
+
+                </button>
+
+              </div>
+
+            </>
+          )}
+
+        </div>
+
+        {/* ================= RIGHT SIDE ================= */}
+
+        <div className="booking-info-card">
+
+          <h2>
+            Why Choose Eventbite?
+          </h2>
+
+          <div className="feature-box">
+            Professional Catering
+          </div>
+
+          <div className="feature-box">
+            Fresh Quality Food
+          </div>
+
+          <div className="feature-box">
+            Fast Delivery
+          </div>
+
+          <div className="feature-box">
+            Affordable Packages
+          </div>
+
+          <div className="feature-box">
+            Wedding Specialists
+          </div>
+
+        </div>
+
       </div>
+
     </div>
   );
 }

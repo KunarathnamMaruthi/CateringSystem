@@ -1,8 +1,3 @@
-const express =
-  require("express");
-
-const router =
-  express.Router();
 
 const User =
   require("../models/User");
@@ -11,35 +6,38 @@ const jwt =
   require("jsonwebtoken");
 
 // ================= GENERATE TOKEN =================
-const generateToken = (id, isAdmin) => {
+const generateToken = (id) => {
 
   return jwt.sign(
-    {
-      id,
-      isAdmin,
-    },
-
+    { id },
     process.env.JWT_SECRET,
-
     {
-      expiresIn: "1d",
+      expiresIn: "7d",
     }
   );
 };
 
-// ================= REGISTER =================
-router.post(
-  "/register",
-
+// ================= REGISTER USER =================
+exports.registerUser =
   async (req, res) => {
 
     try {
+
+      console.log(
+        "REGISTER API HIT"
+      );
 
       const {
         name,
         email,
         password,
       } = req.body;
+
+      console.log(
+        "DATA RECEIVED:",
+        name,
+        email
+      );
 
       // VALIDATION
       if (
@@ -55,18 +53,22 @@ router.post(
         });
       }
 
-      // CHECK EXISTING USER
+      // CHECK USER
       const existingUser =
         await User.findOne({
           email,
         });
+
+      console.log(
+        "CHECKED EXISTING USER"
+      );
 
       if (existingUser) {
 
         return res.status(400).json({
           success: false,
           message:
-            "Email already exists",
+            "User already exists",
         });
       }
 
@@ -78,22 +80,22 @@ router.post(
           password,
         });
 
-      // TOKEN
-      const token =
-        generateToken(
-          user._id,
-          user.isAdmin
-        );
+      console.log(
+        "USER CREATED SUCCESSFULLY"
+      );
 
       res.status(201).json({
         success: true,
         message:
           "Registration successful",
 
-        token,
+        token:
+          generateToken(
+            user._id
+          ),
 
         user: {
-          _id: user._id,
+          id: user._id,
           name: user.name,
           email: user.email,
           isAdmin:
@@ -112,18 +114,21 @@ router.post(
         success: false,
         message:
           "Registration failed",
+        error:
+          error.message,
       });
     }
-  }
-);
+  };
 
-// ================= LOGIN =================
-router.post(
-  "/login",
-
+// ================= LOGIN USER =================
+exports.loginUser =
   async (req, res) => {
 
     try {
+
+      console.log(
+        "LOGIN API HIT"
+      );
 
       const {
         email,
@@ -151,44 +156,40 @@ router.post(
 
       if (!user) {
 
-        return res.status(400).json({
+        return res.status(401).json({
           success: false,
           message:
-            "User not found",
+            "Invalid email or password",
         });
       }
 
-      // PASSWORD CHECK
-      const match =
+      // CHECK PASSWORD
+      const isMatch =
         await user.matchPassword(
           password
         );
 
-      if (!match) {
+      if (!isMatch) {
 
-        return res.status(400).json({
+        return res.status(401).json({
           success: false,
           message:
-            "Wrong password",
+            "Invalid email or password",
         });
       }
-
-      // TOKEN
-      const token =
-        generateToken(
-          user._id,
-          user.isAdmin
-        );
 
       res.json({
         success: true,
         message:
           "Login successful",
 
-        token,
+        token:
+          generateToken(
+            user._id
+          ),
 
         user: {
-          _id: user._id,
+          id: user._id,
           name: user.name,
           email: user.email,
           isAdmin:
@@ -207,33 +208,27 @@ router.post(
         success: false,
         message:
           "Login failed",
+        error:
+          error.message,
       });
     }
-  }
-);
+  };
 
-// ================= RESET PASSWORD =================
-router.put(
-  "/reset-password",
-
+// ================= FORGOT PASSWORD =================
+exports.forgotPassword =
   async (req, res) => {
 
     try {
 
-      const {
-        email,
-        newPassword,
-      } = req.body;
+      const { email } =
+        req.body;
 
-      if (
-        !email ||
-        !newPassword
-      ) {
+      if (!email) {
 
         return res.status(400).json({
           success: false,
           message:
-            "All fields are required",
+            "Please enter email",
         });
       }
 
@@ -251,32 +246,23 @@ router.put(
         });
       }
 
-      user.password =
-        newPassword;
-
-      await user.save();
-
       res.json({
         success: true,
         message:
-          "Password reset successful",
+          "Password reset link sent (demo)",
       });
 
     } catch (error) {
 
       console.error(
-        "RESET PASSWORD ERROR:",
+        "FORGOT PASSWORD ERROR:",
         error
       );
 
       res.status(500).json({
         success: false,
         message:
-          "Password reset failed",
+          "Forgot password failed",
       });
     }
-  }
-);
-
-module.exports =
-  router;
+  };

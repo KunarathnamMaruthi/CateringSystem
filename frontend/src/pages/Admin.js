@@ -1,223 +1,868 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import API from "../api/api";
 
+import "./Admin.css";
+
 export default function Admin() {
-  const [search, setSearch] = useState("");
-  const [bookings, setBookings] = useState([]);
-  const [editData, setEditData] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  // Protect admin
+  // ================= STATES =================
+
+  const [search, setSearch] =
+    useState("");
+
+  const [bookings, setBookings] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [editingId, setEditingId] =
+    useState(null);
+
+  const [editData, setEditData] =
+    useState({
+      name: "",
+      email: "",
+      guests: "",
+    });
+
+  // ================= MENU STATES =================
+
+  const [showMenuForm,
+    setShowMenuForm] =
+    useState(false);
+
+  const [menuData,
+    setMenuData] =
+    useState({
+
+      name: "",
+
+      category: "",
+
+      price: "",
+
+      offer: "",
+
+      description: "",
+
+      image: "",
+    });
+
+  // ================= ADMIN PROTECT =================
+
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const token = localStorage.getItem("token");
 
-    if (!token || !user?.isAdmin) {
-      window.location.href = "/login";
+    const token =
+      localStorage.getItem(
+        "token"
+      );
+
+    const user =
+      JSON.parse(
+        localStorage.getItem(
+          "user"
+        )
+      );
+
+    // NO LOGIN
+
+    if (!token) {
+
+      window.location.href =
+        "/login";
+
+      return;
     }
+
+    // NOT ADMIN
+
+    if (
+      !user ||
+      !user.isAdmin
+    ) {
+
+      alert(
+        "Access Denied"
+      );
+
+      window.location.href =
+        "/";
+
+      return;
+    }
+
   }, []);
 
-  // 🔹 FETCH BOOKINGS
-  const fetchBookings = async () => {
-    try {
-      setLoading(true);
-      const res = await API.get("/bookings");
-      setBookings(res.data);
-    } catch (err) {
-      console.error(err.response?.data);
-      alert("Failed to fetch bookings");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // ================= FETCH BOOKINGS =================
+
+  const fetchBookings =
+    async () => {
+
+      try {
+
+        setLoading(true);
+
+        const res =
+          await API.get(
+            "/bookings"
+          );
+
+        setBookings(
+
+          Array.isArray(
+            res.data.bookings
+          )
+
+            ? res.data.bookings
+
+            : []
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+        setBookings([]);
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
 
   useEffect(() => {
+
     fetchBookings();
+
   }, []);
 
-  // 🔹 UPDATE STATUS
-  const updateStatus = async (id, status) => {
-    try {
-      setLoading(true);
-      await API.put(`/bookings/${id}`, { status });
-      fetchBookings();
-    } catch (err) {
-      alert(err.response?.data?.message || "Update failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // ================= ADD MENU =================
 
-  //DELETE
-  const deleteBooking = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+  const addMenu = async () => {
 
     try {
-      setLoading(true);
-      await API.delete(`/bookings/${id}`);
-      fetchBookings();
-    } catch (err) {
-      alert(err.response?.data?.message || "Delete failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  //EDIT
-  const editBooking = (booking) => {
-    setEditData(booking);
-  };
+      await API.post(
+        "/menu",
+        menuData
+      );
 
-  const updateBooking = async () => {
-    if (!editData.name || !editData.email) {
-      return alert("Name & Email required");
-    }
+      alert(
+        "Menu Added Successfully"
+      );
 
-    try {
-      setLoading(true);
+      setMenuData({
 
-      await API.put(`/bookings/${editData._id}`, {
-        ...editData,
-        guests: Number(editData.guests),
+        name: "",
+
+        category: "",
+
+        price: "",
+
+        offer: "",
+
+        description: "",
+
+        image: "",
       });
 
-      alert("Updated successfully");
-      setEditData(null);
-      fetchBookings();
-    } catch (err) {
-      alert(err.response?.data?.message || "Update failed");
-    } finally {
-      setLoading(false);
+      setShowMenuForm(
+        false
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Failed To Add Menu"
+      );
     }
   };
 
+  // ================= UPDATE STATUS =================
+
+  const updateStatus =
+    async (
+      id,
+      status
+    ) => {
+
+      try {
+
+        await API.put(
+
+          `/bookings/${id}`,
+
+          { status }
+        );
+
+        fetchBookings();
+
+      } catch (err) {
+
+        alert(
+          "Update failed"
+        );
+      }
+    };
+
+  // ================= DELETE =================
+
+  const deleteBooking =
+    async (id) => {
+
+      const confirmDelete =
+        window.confirm(
+          "Delete booking?"
+        );
+
+      if (
+        !confirmDelete
+      ) {
+        return;
+      }
+
+      try {
+
+        await API.delete(
+          `/bookings/${id}`
+        );
+
+        fetchBookings();
+
+      } catch (err) {
+
+        alert(
+          "Delete failed"
+        );
+      }
+    };
+
+  // ================= EDIT =================
+
+  const editBooking =
+    (booking) => {
+
+      setEditingId(
+        booking._id
+      );
+
+      setEditData({
+
+        name:
+          booking.name,
+
+        email:
+          booking.email,
+
+        guests:
+          booking.guests,
+      });
+    };
+
+  // ================= SAVE EDIT =================
+
+  const saveEdit =
+    async (id) => {
+
+      try {
+
+        await API.put(
+
+          `/bookings/${id}`,
+
+          editData
+        );
+
+        setEditingId(
+          null
+        );
+
+        fetchBookings();
+
+      } catch (err) {
+
+        alert(
+          "Update failed"
+        );
+      }
+    };
+
+  // ================= FILTER =================
+
+  const filteredBookings =
+
+    Array.isArray(bookings)
+
+      ? bookings.filter(
+          (b) =>
+
+            (
+              (b.name || "") +
+
+              (b.email || "")
+            )
+
+              .toLowerCase()
+
+              .includes(
+                search.toLowerCase()
+              )
+        )
+
+      : [];
+
+  // ================= COUNTS =================
+
+  const approvedCount =
+
+    bookings.filter(
+      (b) =>
+        b.status ===
+        "approved"
+    ).length;
+
+  const pendingCount =
+
+    bookings.filter(
+      (b) =>
+        b.status ===
+        "pending"
+    ).length;
+
+  const cancelledCount =
+
+    bookings.filter(
+      (b) =>
+        b.status ===
+        "cancelled"
+    ).length;
+
+  // ================= RETURN =================
+
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-card">
-        <h2>Admin Dashboard</h2>
 
-        {/* SEARCH */}
-        <input
-          type="text"
-          placeholder="Search bookings..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+    <div className="admin-page">
 
-        {loading && <p>Loading...</p>}
+      <div className="admin-container">
 
-        {/* EDIT FORM */}
-        {editData && (
-          <div className="card">
-            <h3>Edit Booking</h3>
+        {/* HEADER */}
+
+        <div className="admin-header">
+
+          <div className="admin-top">
+
+            <div>
+
+              <h1 className="admin-title">
+                Admin Dashboard
+              </h1>
+
+              <p className="admin-subtitle">
+                Catering Management System
+              </p>
+
+            </div>
+
+            <div className="admin-profile">
+
+              <button
+                className="add-menu-btn"
+                onClick={() =>
+                  setShowMenuForm(
+                    !showMenuForm
+                  )
+                }
+              >
+
+                + Add Menu
+
+              </button>
+
+              <div className="admin-avatar">
+                Admin
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* SEARCH */}
+
+          <input
+            type="text"
+            placeholder="Search bookings..."
+            className="search-input"
+            value={search}
+            onChange={(e) =>
+              setSearch(
+                e.target.value
+              )
+            }
+          />
+
+        </div>
+
+        {/* ================= MENU FORM ================= */}
+
+        {showMenuForm && (
+
+          <div className="menu-form-card">
+
+            <h2>
+              Add New Menu
+            </h2>
 
             <input
-              value={editData.name || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, name: e.target.value })
-              }
-            />
-
-            <input
-              value={editData.email || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, email: e.target.value })
-              }
-            />
-
-            <input
-              value={editData.guests || ""}
-              onChange={(e) =>
-                setEditData({
-                  ...editData,
-                  guests: Number(e.target.value),
+              type="text"
+              placeholder="Menu Name"
+              value={menuData.name}
+              onChange={(e)=>
+                setMenuData({
+                  ...menuData,
+                  name:
+                    e.target.value,
                 })
               }
             />
 
-            <button onClick={updateBooking}>Save</button>
-            <button onClick={() => setEditData(null)}>Cancel</button>
+            <select
+              value={
+                menuData.category
+              }
+              onChange={(e)=>
+                setMenuData({
+                  ...menuData,
+                  category:
+                    e.target.value,
+                })
+              }
+            >
+
+              <option value="">
+                Select Category
+              </option>
+
+              <option value="Wedding">
+                Wedding
+              </option>
+
+              <option value="Birthday">
+                Birthday
+              </option>
+
+              <option value="Corporate">
+                Corporate
+              </option>
+
+              <option value="Private">
+                Private
+              </option>
+
+            </select>
+
+            <input
+              type="number"
+              placeholder="Price"
+              value={menuData.price}
+              onChange={(e)=>
+                setMenuData({
+                  ...menuData,
+                  price:
+                    e.target.value,
+                })
+              }
+            />
+
+            <input
+              type="text"
+              placeholder="Offer"
+              value={menuData.offer}
+              onChange={(e)=>
+                setMenuData({
+                  ...menuData,
+                  offer:
+                    e.target.value,
+                })
+              }
+            />
+
+            <textarea
+              placeholder="Description"
+              value={
+                menuData.description
+              }
+              onChange={(e)=>
+                setMenuData({
+                  ...menuData,
+                  description:
+                    e.target.value,
+                })
+              }
+            />
+
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={menuData.image}
+              onChange={(e)=>
+                setMenuData({
+                  ...menuData,
+                  image:
+                    e.target.value,
+                })
+              }
+            />
+
+            {/* IMAGE PREVIEW */}
+
+            {menuData.image && (
+
+              <img
+                src={menuData.image}
+                alt="preview"
+                style={{
+                  width: "220px",
+                  borderRadius: "12px",
+                  marginTop: "10px",
+                }}
+              />
+
+            )}
+
+            <button
+              className="save-menu-btn"
+              onClick={addMenu}
+            >
+
+              Save Menu
+
+            </button>
+
           </div>
+
         )}
 
-        {/* STATS */}
-        <div className="stats">
-          <div>Total: {bookings.length}</div>
-          <div>
-            Approved: {bookings.filter(b => b.status === "approved").length}
+        {/* ================= STATS ================= */}
+
+        <div className="stats-grid">
+
+          <div className="stat-card total">
+
+            <h3>Total</h3>
+
+            <p>
+              {bookings.length}
+            </p>
+
           </div>
-          <div>
-            Pending: {bookings.filter(b => b.status === "pending").length}
+
+          <div className="stat-card approved">
+
+            <h3>Approved</h3>
+
+            <p>
+              {approvedCount}
+            </p>
+
           </div>
-          <div>
-            Cancelled: {bookings.filter(b => b.status === "cancelled").length}
+
+          <div className="stat-card pending">
+
+            <h3>Pending</h3>
+
+            <p>
+              {pendingCount}
+            </p>
+
           </div>
+
+          <div className="stat-card cancelled">
+
+            <h3>Cancelled</h3>
+
+            <p>
+              {cancelledCount}
+            </p>
+
+          </div>
+
         </div>
 
-        {/* TABLE */}
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Guests</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        {/* ================= BOOKINGS TABLE ================= */}
 
-          <tbody>
-            {bookings
-              .filter((b) =>
-                (b.name + b.email)
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              )
-              .map((b) => (
-                <tr key={b._id}>
-                  <td>{b.name}</td>
-                  <td>{b.email}</td>
-                  <td>{b.guests}</td>
-                  <td>
-                    {b.eventDate
-                      ? new Date(b.eventDate).toLocaleDateString("en-AU")
-                      : "-"}
-                  </td>
+        <div className="booking-section">
 
-                  <td
-                    style={{
-                      color:
-                        b.status === "approved"
-                          ? "green"
-                          : b.status === "cancelled"
-                          ? "red"
-                          : "orange",
-                    }}
-                  >
-                    {b.status}
-                  </td>
+          <h2 className="section-title">
+            Booking Management
+          </h2>
 
-                  <td>
-                    <button onClick={() => updateStatus(b._id, "approved")}>
-                      Approve
-                    </button>
+          <div className="table-container">
 
-                    <button onClick={() => updateStatus(b._id, "cancelled")}>
-                      Cancel
-                    </button>
+            <table>
 
-                    <button onClick={() => editBooking(b)}>Edit</button>
+              <thead>
 
-                    <button onClick={() => deleteBooking(b._id)}>
-                      Delete
-                    </button>
-                  </td>
+                <tr>
+
+                  <th>Name</th>
+
+                  <th>Email</th>
+
+                  <th>Guests</th>
+
+                  <th>Date</th>
+
+                  <th>Status</th>
+
+                  <th>Actions</th>
+
                 </tr>
-              ))}
-          </tbody>
-        </table>
+
+              </thead>
+
+              <tbody>
+
+                {loading ? (
+
+                  <tr>
+
+                    <td colSpan="6">
+                      Loading...
+                    </td>
+
+                  </tr>
+
+                ) : filteredBookings.length >
+                  0 ? (
+
+                  filteredBookings.map(
+                    (b) => (
+
+                      <tr key={b._id}>
+
+                        {/* NAME */}
+
+                        <td>
+
+                          {editingId ===
+                          b._id ? (
+
+                            <input
+                              value={
+                                editData.name
+                              }
+                              onChange={(e)=>
+                                setEditData({
+                                  ...editData,
+                                  name:
+                                    e.target.value,
+                                })
+                              }
+                            />
+
+                          ) : (
+                            b.name
+                          )}
+
+                        </td>
+
+                        {/* EMAIL */}
+
+                        <td>
+
+                          {editingId ===
+                          b._id ? (
+
+                            <input
+                              value={
+                                editData.email
+                              }
+                              onChange={(e)=>
+                                setEditData({
+                                  ...editData,
+                                  email:
+                                    e.target.value,
+                                })
+                              }
+                            />
+
+                          ) : (
+                            b.email
+                          )}
+
+                        </td>
+
+                        {/* GUESTS */}
+
+                        <td>
+
+                          {editingId ===
+                          b._id ? (
+
+                            <input
+                              value={
+                                editData.guests
+                              }
+                              onChange={(e)=>
+                                setEditData({
+                                  ...editData,
+                                  guests:
+                                    e.target.value,
+                                })
+                              }
+                            />
+
+                          ) : (
+                            b.guests
+                          )}
+
+                        </td>
+
+                        {/* DATE */}
+
+                        <td>
+
+                          {b.eventDate
+
+                            ? new Date(
+                                b.eventDate
+                              ).toLocaleDateString(
+                                "en-AU"
+                              )
+
+                            : "-"}
+
+                        </td>
+
+                        {/* STATUS */}
+
+                        <td>
+
+                          <span
+                            className={`status-badge ${b.status}`}
+                          >
+
+                            {b.status}
+
+                          </span>
+
+                        </td>
+
+                        {/* ACTIONS */}
+
+                        <td>
+
+                          <div className="action-buttons">
+
+                            <button
+                              className="approve-btn"
+                              onClick={() =>
+                                updateStatus(
+                                  b._id,
+                                  "approved"
+                                )
+                              }
+                            >
+                              Approve
+                            </button>
+
+                            <button
+                              className="cancel-btn"
+                              onClick={() =>
+                                updateStatus(
+                                  b._id,
+                                  "cancelled"
+                                )
+                              }
+                            >
+                              Cancel
+                            </button>
+
+                            {editingId ===
+                            b._id ? (
+
+                              <button
+                                className="edit-btn"
+                                onClick={() =>
+                                  saveEdit(
+                                    b._id
+                                  )
+                                }
+                              >
+                                Save
+                              </button>
+
+                            ) : (
+
+                              <button
+                                className="edit-btn"
+                                onClick={() =>
+                                  editBooking(
+                                    b
+                                  )
+                                }
+                              >
+                                Edit
+                              </button>
+
+                            )}
+
+                            <button
+                              className="delete-btn"
+                              onClick={() =>
+                                deleteBooking(
+                                  b._id
+                                )
+                              }
+                            >
+                              Delete
+                            </button>
+
+                          </div>
+
+                        </td>
+
+                      </tr>
+                    )
+                  )
+
+                ) : (
+
+                  <tr>
+
+                    <td
+                      colSpan="6"
+                      style={{
+                        textAlign:
+                          "center",
+                      }}
+                    >
+
+                      No bookings found
+
+                    </td>
+
+                  </tr>
+
+                )}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
   );
 }
