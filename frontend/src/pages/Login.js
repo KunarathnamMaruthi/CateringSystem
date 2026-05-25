@@ -114,7 +114,7 @@ export default function Login() {
         <div className="auth-card">
 
           <h1>
-            Welcome Back 👋
+            Welcome Back 
           </h1>
 
           <p>

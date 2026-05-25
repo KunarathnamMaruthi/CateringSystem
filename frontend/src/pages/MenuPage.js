@@ -149,8 +149,9 @@ export default function MenuPage() {
 
               <img
                 src={
-                  item.image ||
-                  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
+                  item.image
+                    ? `http://localhost:5000/uploads/${item.image}`
+                    : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
                 }
                 alt={item.name}
                 className="menu-image"
@@ -190,7 +191,7 @@ export default function MenuPage() {
 
                   <p className="menu-offer">
 
-                    🎉 {item.offer}
+                     {item.offer}
 
                   </p>
 

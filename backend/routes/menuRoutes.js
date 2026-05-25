@@ -1,14 +1,76 @@
-const express = require("express");
+const express =
+  require("express");
 
-const router = express.Router();
+const router =
+  express.Router();
+
+const multer =
+  require("multer");
+
+const path =
+  require("path");
 
 const {
   getMenus,
   addMenu,
-} = require("../controllers/MenuController");
+} = require(
+  "../controllers/MenuController"
+);
 
-router.get("/", getMenus);
+// STORAGE
 
-router.post("/", addMenu);
+const storage =
+  multer.diskStorage({
 
-module.exports = router;
+    destination:
+      function (
+        req,
+        file,
+        cb
+      ) {
+
+        cb(
+          null,
+          "uploads/"
+        );
+      },
+
+    filename:
+      function (
+        req,
+        file,
+        cb
+      ) {
+
+        cb(
+          null,
+          Date.now() +
+            path.extname(
+              file.originalname
+            )
+        );
+      },
+  });
+
+const upload =
+  multer({
+    storage,
+  });
+
+// ROUTES
+
+router.get(
+  "/",
+  getMenus
+);
+
+router.post(
+  "/",
+  upload.single(
+    "image"
+  ),
+  addMenu
+);
+
+module.exports =
+  router;

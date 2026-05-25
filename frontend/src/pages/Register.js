@@ -24,7 +24,8 @@ export default function Register() {
   const [loading, setLoading] =
     useState(false);
 
-  // ================= HANDLE INPUT =================
+  // HANDLE INPUT
+
   const handleChange = (e) => {
 
     setData({
@@ -34,11 +35,11 @@ export default function Register() {
     });
   };
 
-  // ================= REGISTER =================
+  // REGISTER
+
   const handleRegister =
     async () => {
 
-      // VALIDATION
       if (
         !data.name ||
         !data.email ||
@@ -51,27 +52,6 @@ export default function Register() {
         );
       }
 
-      // EMAIL CHECK
-      if (
-        !data.email.includes("@")
-      ) {
-
-        return alert(
-          "Enter a valid email"
-        );
-      }
-
-      // PASSWORD LENGTH
-      if (
-        data.password.length < 6
-      ) {
-
-        return alert(
-          "Password must be at least 6 characters"
-        );
-      }
-
-      // PASSWORD MATCH
       if (
         data.password !==
         data.confirmPassword
@@ -86,19 +66,14 @@ export default function Register() {
 
         setLoading(true);
 
-        const res =
-          await API.post(
-            "/users/register",
-            {
-              name: data.name,
-              email: data.email,
-              password:
-                data.password,
-            }
-          );
-
-        console.log(
-          res.data
+        await API.post(
+          "/users/register",
+          {
+            name: data.name,
+            email: data.email,
+            password:
+              data.password,
+          }
         );
 
         alert(
@@ -109,13 +84,11 @@ export default function Register() {
 
       } catch (err) {
 
-        console.error(
-          err.response?.data ||
-          err.message
-        );
+        console.log(err);
 
         alert(
-          err.response?.data?.message ||
+          err.response?.data
+            ?.message ||
           "Register failed"
         );
 
@@ -134,14 +107,12 @@ export default function Register() {
         <div className="auth-card">
 
           <h1>
-            Create Account 🚀
+            Create Account
           </h1>
 
           <p>
             Register to start booking catering services
           </p>
-
-          {/* NAME */}
 
           <input
             type="text"
@@ -151,8 +122,6 @@ export default function Register() {
             onChange={handleChange}
           />
 
-          {/* EMAIL */}
-
           <input
             type="email"
             name="email"
@@ -161,34 +130,25 @@ export default function Register() {
             onChange={handleChange}
           />
 
-          {/* PASSWORD */}
-
           <input
             type="password"
             name="password"
             placeholder="Password"
-            autoComplete="new-password"
             value={data.password}
             onChange={handleChange}
           />
-
-          {/* CONFIRM PASSWORD */}
 
           <input
             type="password"
             name="confirmPassword"
             placeholder="Confirm Password"
-            autoComplete="new-password"
             value={data.confirmPassword}
             onChange={handleChange}
           />
 
-          {/* BUTTON */}
-
           <button
             className="btn-green"
             onClick={handleRegister}
-            disabled={loading}
           >
 
             {loading
@@ -196,8 +156,6 @@ export default function Register() {
               : "Register"}
 
           </button>
-
-          {/* LOGIN */}
 
           <p className="auth-link">
 
@@ -208,7 +166,9 @@ export default function Register() {
                 navigate("/login")
               }
             >
+
               Login Here
+
             </span>
 
           </p>

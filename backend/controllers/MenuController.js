@@ -1,39 +1,78 @@
-const mongoose = require("mongoose");
+const Menu =
+  require("../models/Menu");
 
-const menuSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
+// GET MENUS
 
-    category: {
-      type: String,
-      required: true,
-    },
+const getMenus =
+  async (req, res) => {
 
-    price: {
-      type: Number,
-      required: true,
-    },
+    try {
 
-    offer: {
-      type: String,
-    },
+      const menus =
+        await Menu.find();
 
-    description: {
-      type: String,
-      required: true,
-    },
+      res.json(menus);
 
-    image: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+    } catch (error) {
 
-module.exports = mongoose.model("Menu", menuSchema);
+      console.log(error);
+
+      res.status(500).json({
+        message:
+          error.message,
+      });
+    }
+  };
+
+// ADD MENU
+
+const addMenu =
+  async (req, res) => {
+
+    try {
+
+      const menu =
+        new Menu({
+
+          name:
+            req.body.name,
+
+          category:
+            req.body.category,
+
+          price:
+            req.body.price,
+
+          offer:
+            req.body.offer,
+
+          description:
+            req.body.description,
+
+          image:
+            req.file
+              ? req.file.filename
+              : "",
+        });
+
+      await menu.save();
+
+      res.status(201).json(
+        menu
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+        message:
+          error.message,
+      });
+    }
+  };
+
+module.exports = {
+  getMenus,
+  addMenu,
+};

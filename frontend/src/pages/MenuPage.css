@@ -43,7 +43,54 @@
   flex-direction: column;
 }
 
+.upload-box {
 
+  width: 100%;
+
+  min-height: 220px;
+
+  border: 2px dashed #16a34a;
+
+  border-radius: 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  overflow: hidden;
+
+  background: #f8fafc;
+
+  margin-top: 10px;
+
+}
+
+.upload-content {
+
+  text-align: center;
+
+  color: #555;
+}
+
+.upload-content h3 {
+
+  margin-bottom: 8px;
+
+  color: #16a34a;
+}
+
+.preview-image {
+
+  width: 100%;
+
+  height: 220px;
+
+  object-fit: cover;
+}
 
 
 

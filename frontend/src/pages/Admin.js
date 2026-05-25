@@ -20,10 +20,12 @@ export default function Admin() {
   const [loading, setLoading] =
     useState(false);
 
-  const [editingId, setEditingId] =
+  const [editingId,
+    setEditingId] =
     useState(null);
 
-  const [editData, setEditData] =
+  const [editData,
+    setEditData] =
     useState({
       name: "",
       email: "",
@@ -69,8 +71,6 @@ export default function Admin() {
         )
       );
 
-    // NO LOGIN
-
     if (!token) {
 
       window.location.href =
@@ -78,8 +78,6 @@ export default function Admin() {
 
       return;
     }
-
-    // NOT ADMIN
 
     if (
       !user ||
@@ -147,9 +145,48 @@ export default function Admin() {
 
     try {
 
+      const formData =
+        new FormData();
+
+      formData.append(
+        "name",
+        menuData.name
+      );
+
+      formData.append(
+        "category",
+        menuData.category
+      );
+
+      formData.append(
+        "price",
+        menuData.price
+      );
+
+      formData.append(
+        "offer",
+        menuData.offer
+      );
+
+      formData.append(
+        "description",
+        menuData.description
+      );
+
+      formData.append(
+        "image",
+        menuData.image
+      );
+
       await API.post(
         "/menu",
-        menuData
+        formData,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
       );
 
       alert(
@@ -507,15 +544,16 @@ export default function Admin() {
               }
             />
 
+            {/* IMAGE INPUT */}
+
             <input
-              type="text"
-              placeholder="Image URL"
-              value={menuData.image}
+              type="file"
+              accept="image/*"
               onChange={(e)=>
                 setMenuData({
                   ...menuData,
                   image:
-                    e.target.value,
+                    e.target.files[0],
                 })
               }
             />
@@ -525,10 +563,12 @@ export default function Admin() {
             {menuData.image && (
 
               <img
-                src={menuData.image}
+                src={URL.createObjectURL(menuData.image)}
                 alt="preview"
                 style={{
                   width: "220px",
+                  height: "160px",
+                  objectFit: "cover",
                   borderRadius: "12px",
                   marginTop: "10px",
                 }}
@@ -647,8 +687,6 @@ export default function Admin() {
 
                       <tr key={b._id}>
 
-                        {/* NAME */}
-
                         <td>
 
                           {editingId ===
@@ -672,8 +710,6 @@ export default function Admin() {
                           )}
 
                         </td>
-
-                        {/* EMAIL */}
 
                         <td>
 
@@ -699,8 +735,6 @@ export default function Admin() {
 
                         </td>
 
-                        {/* GUESTS */}
-
                         <td>
 
                           {editingId ===
@@ -725,8 +759,6 @@ export default function Admin() {
 
                         </td>
 
-                        {/* DATE */}
-
                         <td>
 
                           {b.eventDate
@@ -741,8 +773,6 @@ export default function Admin() {
 
                         </td>
 
-                        {/* STATUS */}
-
                         <td>
 
                           <span
@@ -754,8 +784,6 @@ export default function Admin() {
                           </span>
 
                         </td>
-
-                        {/* ACTIONS */}
 
                         <td>
 
