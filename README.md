@@ -32,3 +32,5 @@ This is a full-stack web application developed using Node.js, Express, React, an
 cd backend
 npm install
 npm start
+
+CI/CD test
