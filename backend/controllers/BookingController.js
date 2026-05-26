@@ -1,6 +1,6 @@
 const Booking = require("../models/Booking");
 
-// ================= CREATE BOOKING =================
+// CREATE BOOKING =================
 exports.createBooking = async (req, res) => {
   try {
     const booking = await Booking.create({

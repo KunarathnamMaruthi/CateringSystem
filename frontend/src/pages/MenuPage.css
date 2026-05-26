@@ -106,12 +106,17 @@
 
 .menu-content {
   padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .menu-content h2 {
   font-size: 32px;
   color: #0d6832;
   margin-bottom: 8px;
+
+  min-height: 76px; /* SAME TITLE HEIGHT */
 }
 
 .menu-category {
@@ -126,6 +131,8 @@
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 20px;
+
+  min-height: 90px; /* SAME DESCRIPTION HEIGHT */
 }
 
 /* PRICE */
@@ -144,33 +151,12 @@
   background: #118a5a;
   color: white;
   border: none;
-
   padding: 14px;
-
   border-radius: 10px;
-
   font-size: 15px;
   font-weight: bold;
-
   cursor: pointer;
-
   transition: 0.3s ease;
-}
 
-.order-btn:hover {
-  background: #0b6d47;
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-  .menu-title{
-    font-size: 34px;
-  }
-
-  .menu-grid{
-    grid-template-columns: 1fr;
-  }
-
+  margin-top: auto; /* PUSH BUTTON TO BOTTOM */
 }
