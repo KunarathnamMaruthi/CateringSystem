@@ -73,9 +73,13 @@ function App() {
             Profile
           </Link>
 
-          <Link to="/admin">
-            Admin
-          </Link>
+          {JSON.parse(localStorage.getItem("user"))?.isAdmin && (
+
+  <Link to="/admin">
+    Admin
+  </Link>
+
+)}
 
           {/* LOGIN / LOGOUT */}
 

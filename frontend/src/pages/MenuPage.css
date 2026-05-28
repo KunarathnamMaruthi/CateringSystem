@@ -7,7 +7,7 @@
 /* TITLE */
 
 .menu-title {
-  font-size: 48px;
+  font-size: 40px;
   font-weight: bold;
   color: #0d6832;
   margin-bottom: 25px;
@@ -26,9 +26,9 @@
 
 .menu-card {
 
-  width: 280px;
+  width: 345px;
 
-  background: white;
+  background: rgb(230, 240, 233);
 
   border-radius: 20px;
 
@@ -37,7 +37,7 @@
   box-shadow:
     0 5px 15px rgba(0,0,0,0.08);
 
-  transition: 0.3s ease;
+  transition: 0. ease;
 
   display: flex;
   flex-direction: column;
@@ -116,7 +116,7 @@
   color: #0d6832;
   margin-bottom: 8px;
 
-  min-height: 76px; /* SAME TITLE HEIGHT */
+  min-height: 75px; /* SAME TITLE HEIGHT */
 }
 
 .menu-category {
@@ -159,4 +159,21 @@
   transition: 0.3s ease;
 
   margin-top: auto; /* PUSH BUTTON TO BOTTOM */
+}
+
+.menu-content{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  height:100%;
+}
+
+.menu-offer{
+  color: red;
+  background: #f5e6b8;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: inline-block;
+  margin-bottom: 20px;
 }
