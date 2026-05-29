@@ -4,7 +4,7 @@ import "../App.css";
 
 function Register() {
   const [form, setForm] = useState({
-    name: "",
+    title: "",
     email: "",
     password: "",
   });
@@ -25,7 +25,7 @@ function Register() {
       alert(res.data.message || "Registered successfully");
 
       setForm({
-        name: "",
+       title: "",
         email: "",
         password: "",
       });

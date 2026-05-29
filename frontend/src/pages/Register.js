@@ -15,7 +15,7 @@ export default function Register() {
 
   const [data, setData] =
     useState({
-      name: "",
+     title: "",
       email: "",
       password: "",
       confirmPassword: "",

@@ -147,15 +147,11 @@ export default function MenuPage() {
 
               {/* IMAGE */}
 
-              <img
-                src={
-                  item.image
-                    ? `http://localhost:5000/uploads/${item.image}`
-                    : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
-                }
-                alt={item.name}
-                className="menu-image"
-              />
+             <img
+  src={`http://localhost:5000/uploads/${item.image}`}
+  alt={item.title}
+  className="menu-image"
+/>
 
               {/* CONTENT */}
 
@@ -164,7 +160,7 @@ export default function MenuPage() {
                 {/* NAME */}
 
                 <h2 className="menu-name">
-                  {item.name}
+                  {item.title}
                 </h2>
 
                 {/* CATEGORY */}
@@ -207,7 +203,7 @@ export default function MenuPage() {
                       {
                         state: {
                           menuName:
-                            item.name,
+                            item.title,
 
                           category:
                             item.category,
@@ -216,7 +212,7 @@ export default function MenuPage() {
                             item.price,
 
                           image:
-                            item.image,
+                            item.title,
                         },
                       }
                     )

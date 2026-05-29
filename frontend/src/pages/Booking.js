@@ -17,7 +17,7 @@ export default function Booking() {
   const [data, setData] =
     useState({
 
-      name: "",
+     title: "",
       email: "",
       phone: "",
       address: "",
@@ -50,7 +50,7 @@ export default function Booking() {
 
       if (
 
-        !data.name ||
+        !data.title ||
         !data.email ||
         !data.phone ||
         !data.address ||
@@ -93,7 +93,7 @@ export default function Booking() {
         const res =
           await API.post(
 
-            "/bookings",
+            "/bookings/create",
 
             data,
 
@@ -117,7 +117,7 @@ export default function Booking() {
 
         setData({
 
-          name: "",
+          title: "",
           email: "",
           phone: "",
           address: "",
@@ -176,9 +176,9 @@ export default function Booking() {
 
               <input
                 type="text"
-                name="name"
-                placeholder="Full Name"
-                value={data.name}
+                name="title"
+                placeholder="Event Title"
+                value={data.title}
                 onChange={
                   handleChange
                 }

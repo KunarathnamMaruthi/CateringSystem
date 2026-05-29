@@ -1,69 +1,96 @@
-const Menu = require("../models/Menu");
+const Menu =
+  require("../models/Menu");
 
 // ================= GET MENUS =================
-const getMenus = async (req, res) => {
 
-  try {
+exports.getMenus =
+  async (req, res) => {
 
-    const menus = await Menu.find();
+    try {
 
-    res.status(200).json({
-      success: true,
-      menus,
-    });
+      const menus =
+        await Menu.find();
 
-  } catch (error) {
+      res.status(200).json(
+        menus
+      );
 
-    console.error("GET MENUS ERROR:", error);
+    } catch (error) {
 
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch menus",
-    });
-  }
-};
+      console.log(error);
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Failed to fetch menu",
+      });
+    }
+  };
 
 // ================= ADD MENU =================
-const addMenu = async (req, res) => {
 
-  try {
+exports.addMenu =
+  async (req, res) => {
 
-    const menu = new Menu({
+    try {
 
-      name: req.body.name,
+      const {
 
-      category: req.body.category,
+        title,
 
-      price: req.body.price,
+        description,
 
-      offer: req.body.offer,
+        price,
 
-      description: req.body.description,
+        category,
 
-      image: req.file
-        ? req.file.filename
-        : "",
-    });
+        offer,
 
-    await menu.save();
+      } = req.body;
 
-    res.status(201).json({
-      success: true,
-      menu,
-    });
+      const image =
 
-  } catch (error) {
+        req.file
 
-    console.error("ADD MENU ERROR:", error);
+          ? req.file.filename
 
-    res.status(500).json({
-      success: false,
-      message: "Failed to add menu",
-    });
-  }
-};
+          : "";
 
-module.exports = {
-  getMenus,
-  addMenu,
-};
+      const menu =
+        new Menu({
+
+          title,
+
+          description,
+
+          price,
+
+          category,
+
+          offer,
+
+          image,
+        });
+
+      await menu.save();
+
+      res.status(201).json({
+
+        success: true,
+
+        menu,
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+
+        success: false,
+
+        message:
+          "Failed To Add Menu",
+      });
+    }
+  };

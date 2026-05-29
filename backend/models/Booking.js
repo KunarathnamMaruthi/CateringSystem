@@ -1,15 +1,10 @@
 const mongoose =
   require("mongoose");
 
-// ================= BOOKING SCHEMA =================
-
 const bookingSchema =
   new mongoose.Schema(
 
     {
-
-      // USER DETAILS
-
       name: {
         type: String,
         required: true,
@@ -25,24 +20,14 @@ const bookingSchema =
       phone: {
         type: String,
         required: true,
+        trim: true,
       },
 
       address: {
         type: String,
         required: true,
+        trim: true,
       },
-
-      street: {
-        type: String,
-        default: "",
-      },
-
-      postal: {
-        type: String,
-        default: "",
-      },
-
-      // BOOKING DETAILS
 
       guests: {
         type: Number,
@@ -57,6 +42,7 @@ const bookingSchema =
       category: {
         type: String,
         required: true,
+        trim: true,
       },
 
       time: {
@@ -64,21 +50,10 @@ const bookingSchema =
         required: true,
       },
 
-      // STATUS
-
       status: {
         type: String,
-        enum: [
-          "pending",
-          "approved",
-          "cancelled",
-          "preparing",
-          "completed",
-        ],
         default: "pending",
       },
-
-      // USER LINK
 
       userId: {
         type:
@@ -88,15 +63,12 @@ const bookingSchema =
 
         required: true,
       },
-
     },
 
     {
       timestamps: true,
     }
   );
-
-// ================= EXPORT =================
 
 module.exports =
   mongoose.model(

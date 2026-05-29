@@ -11,8 +11,11 @@ const path =
   require("path");
 
 const {
+
   getMenus,
+
   addMenu,
+
 } = require(
   "../controllers/MenuController"
 );
@@ -30,8 +33,13 @@ const storage =
       ) {
 
         cb(
+
           null,
-          "uploads/"
+
+          path.join(
+            __dirname,
+            "../../uploads"
+          )
         );
       },
 
@@ -43,11 +51,14 @@ const storage =
       ) {
 
         cb(
+
           null,
+
           Date.now() +
-            path.extname(
-              file.originalname
-            )
+
+          path.extname(
+            file.originalname
+          )
         );
       },
   });
@@ -65,10 +76,11 @@ router.get(
 );
 
 router.post(
+
   "/",
-  upload.single(
-    "image"
-  ),
+
+  upload.single("image"),
+
   addMenu
 );
 

@@ -27,7 +27,7 @@ export default function Admin() {
   const [editData,
     setEditData] =
     useState({
-      name: "",
+      title: "",
       email: "",
       guests: "",
     });
@@ -42,7 +42,7 @@ export default function Admin() {
     setMenuData] =
     useState({
 
-      name: "",
+      title: "",
 
       category: "",
 
@@ -143,84 +143,84 @@ export default function Admin() {
 
   const addMenu = async () => {
 
-    try {
+  try {
 
-      const formData =
-        new FormData();
+    const formData =
+      new FormData();
 
-      formData.append(
-        "name",
-        menuData.name
-      );
+    formData.append(
+      "title",
+      menuData.title
+    );
 
-      formData.append(
-        "category",
-        menuData.category
-      );
+    formData.append(
+      "category",
+      menuData.category
+    );
 
-      formData.append(
-        "price",
-        menuData.price
-      );
+    formData.append(
+      "price",
+      menuData.price
+    );
 
-      formData.append(
-        "offer",
-        menuData.offer
-      );
+    formData.append(
+      "offer",
+      menuData.offer
+    );
 
-      formData.append(
-        "description",
-        menuData.description
-      );
+    formData.append(
+      "description",
+      menuData.description
+    );
 
-      formData.append(
-        "image",
-        menuData.image
-      );
+    formData.append(
+      "image",
+      menuData.image
+    );
 
-      await API.post(
-        "/menu",
-        formData,
-        {
-          headers: {
-            "Content-Type":
-              "multipart/form-data",
-          },
-        }
-      );
+    await API.post(
+      "/menu",
+      formData,
+      {
+        headers: {
+          "Content-Type":
+            "multipart/form-data",
+        },
+      }
+    );
 
-      alert(
-        "Menu Added Successfully"
-      );
+    alert(
+      "Menu Added Successfully"
+    );
 
-      setMenuData({
+    setMenuData({
 
-        name: "",
+      title: "",
 
-        category: "",
+      category: "",
 
-        price: "",
+      price: "",
 
-        offer: "",
+      offer: "",
 
-        description: "",
+      description: "",
 
-        image: "",
-      });
+      image: "",
+    });
 
-      setShowMenuForm(
-        false
-      );
+    setShowMenuForm(
+      false
+    );
 
-    } catch (error) {
+  } catch (error) {
 
-      console.log(error);
+    console.log(error);
 
-      alert(
-        "Failed To Add Menu"
-      );
-    }
-  };
+    alert(
+      "Failed To Add Menu"
+    );
+  }
+};
 
   // ================= UPDATE STATUS =================
 
@@ -292,8 +292,8 @@ export default function Admin() {
 
       setEditData({
 
-        name:
-          booking.name,
+        title:
+          booking.title,
 
         email:
           booking.email,
@@ -459,11 +459,11 @@ export default function Admin() {
             <input
               type="text"
               placeholder="Menu Name"
-              value={menuData.name}
+              value={menuData.title}
               onChange={(e)=>
                 setMenuData({
                   ...menuData,
-                  name:
+                  title:
                     e.target.value,
                 })
               }
